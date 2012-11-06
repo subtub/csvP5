@@ -8,6 +8,11 @@ import processing.core.*;
  * based on Ben Fry's Visualizing Data Book
  */
 public class CsvP5 {
+	
+	// default separator and comment chars
+	public static final String DEFAULT_SEPARATOR = ",";
+	public static final String DEFAULT_COMMENT = "#";
+	public static final String QUOTATION_MARK = "\"";
 
 	PApplet p5;
 
@@ -25,14 +30,26 @@ public class CsvP5 {
 		p5 = p;
 	}
 
-	public CsvP5(PApplet p, String fileName) {
-		p5 = p;
-		loadFile(fileName);
+	public CsvP5(PApplet p, String filename) {
+		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
 	
-	public CsvP5(PApplet p, String fileName, String separator) {
-		p5 = p;
-		loadFile(fileName, separator);
+	public CsvP5(PApplet p, String filename, String separator) {
+		init(p, filename, separator, DEFAULT_COMMENT, false);
+	}
+	
+	public CsvP5(PApplet p, String filename, String separator, boolean hasEnclosingQuotationMarks) {
+		init(p, filename, separator, DEFAULT_COMMENT, hasEnclosingQuotationMarks);
+	}
+	
+	public CsvP5(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
+	}
+
+	
+	public void init(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks){
+		this.p5 = p;
+		loadFile(filename, separator, comment, hasEnclosingQuotationMarks);
 	}
 
 	/**
@@ -42,10 +59,10 @@ public class CsvP5 {
 	 *            Set the filename
 	 * @param separator
 	 *            Set the separator to split csv file
-	 * @param comments
+	 * @param comment
 	 *            Set the comments sign
 	 */
-	public void loadFile(String filename, String separator, String comments) {
+	public void loadFile(String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
 		String[] rows = p5.loadStrings(filename);
 		if (console == true) {
 			System.out.println("### Load File: " + filename);
@@ -60,12 +77,14 @@ public class CsvP5 {
 				continue;
 			}
 			// skip comment lines
-			if (rows[i].startsWith(comments)) {
+			if (rows[i].startsWith(comment)) {
 				continue;
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
-
+			if(hasEnclosingQuotationMarks){
+				removeEnclosingQuotationMarks(pieces);
+			}
 			// Get rid of unnecessary leading and ending spaces
 			data[rowCount] = PApplet.trim(pieces);
 			rowCount++;
@@ -75,6 +94,15 @@ public class CsvP5 {
 		// Store the number of columns (data entries per line)
 		if(data.length >= 1){
 			columnCount = data[0].length;
+		}
+	}
+	
+	public void removeEnclosingQuotationMarks(String[] arr){
+		for(int i=0; i<arr.length; i++){
+			if(arr[i].startsWith(QUOTATION_MARK) && arr[i].endsWith(QUOTATION_MARK) && arr[i].length() > 1){
+				// remove starting and ending quotation marks
+				arr[i] = arr[i].substring(1, arr[i].length()-1);
+			}
 		}
 	}
 
@@ -87,7 +115,7 @@ public class CsvP5 {
 	 *            Set the separator to split csv file
 	 */
 	public void loadFile(String filename, String separator) {
-		loadFile(filename, separator, "#");
+		loadFile(filename, separator, DEFAULT_COMMENT, false);
 	}
 
 	/**
@@ -97,7 +125,7 @@ public class CsvP5 {
 	 *            set the filename
 	 */
 	public void loadFile(String filename) {
-		loadFile(filename, ",", "#");
+		loadFile(filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
 
 	/**
