@@ -12,7 +12,7 @@ public class CsvP5 {
 	PApplet p5;
 
 	// Class Variables
-	public int rowCount;
+	public int columnCount, rowCount;
 	public String[][] data;
 	// console boolean to print out
 	public boolean console = false;
@@ -61,16 +61,20 @@ public class CsvP5 {
 
 			String[] pieces = PApplet.split(rows[i], separator);
 
-			// Let's get rid of unneccessary leading of ending spaces
+			// Get rid of unnecessary leading and ending spaces
 			data[rowCount] = PApplet.trim(pieces);
 			rowCount++;
 		}
 		// resize the 'data' array as necessary
 		data = (String[][]) PApplet.subset(data, 0, rowCount);
+		// Store the number of columns (data entries per line)
+		if(data.length >= 1){
+			columnCount = data[0].length;
+		}
 	}
 
 	/**
-	 * loadFile load a csv File, skip empty and comment lines.
+	 * loadFile load a csv File, skip empty and comment lines (beginning with "#").
 	 * 
 	 * @param filename
 	 *            Set the filename
@@ -82,7 +86,7 @@ public class CsvP5 {
 	}
 
 	/**
-	 * loadFile load a csv File, skip empty and comments lines.
+	 * loadFile load a csv File, skip empty and comments lines (beginning with "#").
 	 * 
 	 * @param filename
 	 *            set the filename
@@ -99,33 +103,44 @@ public class CsvP5 {
 	public int getRowCount() {
 		return rowCount;
 	}
+	
+	/**
+	 * getColumnCount Return the number of columns.
+	 * 
+	 * @return columnCount
+	 */
+	public int getColumnCount() {
+		return columnCount;
+	}
 
 	/**
-	 * getRowIndex Find a row by its name, returns -1 if no row found.
+	 * getColumnIndex Find a column by its name, returns -1 if no column was found.
+	 * You can use this to search for a csv-heading.
 	 * 
 	 * @param name
-	 *            Name of the row
+	 *            Name of the column
 	 * @return integer
 	 */
-	public int getRowIndex(String name) {
-		for (int i = 0; i < rowCount; i++) {
-			if (data[i][0].equals(name)) {
+	public int getColumnIndex(String name) {
+		for (int i = 0; i < columnCount; i++) {
+			if (data[0][i].equals(name)) {
 				return i;
 			}
 		}
-		System.err.println("No row named '" + name + "' was found");
+		System.err.println("No column named '" + name + "' was found");
 		return -1;
 	}
 
 	/**
-	 * getRowName get the String of a specific row and column.
+	 * getColumnName
+	 * Returns the name of a specific column.
 	 * 
-	 * @param row
-	 *            Row number
+	 * @param column
+	 *            Column number
 	 * @return String
 	 */
-	public String getRowName(int row) {
-		return getString(row, 0);
+	public String getColumnName(int column) {
+		return getString(0, column);
 	}
 
 	/**
@@ -133,38 +148,38 @@ public class CsvP5 {
 	 * 
 	 * @param rowIndex
 	 *            Row number
-	 * @param column
+	 * @param columnIndex
 	 *            Column number
 	 * @return String
 	 */
-	public String getString(int rowIndex, int column) {
-		return data[rowIndex][column];
+	public String getString(int rowIndex, int columnIndex) {
+		return data[rowIndex][columnIndex];
 	}
 
 	/**
 	 * getString get the String of a specific row and column.
 	 * 
-	 * @param rowName
-	 *            name of the row
-	 * @param column
-	 *            column number
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return String
 	 */
-	public String getString(String rowName, int column) {
-		return getString(getRowIndex(rowName), column);
+	public String getString(String columnName, int rowIndex) {
+		return getString(rowIndex, getColumnIndex(columnName));
 	}
 
 	/**
 	 * getInt get the integer of a specific row and column.
 	 * 
-	 * @param rowName
-	 *            name of the row
-	 * @param column
-	 *            column number
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return integer
 	 */
-	public int getInt(String rowName, int column) {
-		return Integer.parseInt(getString(rowName, column));
+	public int getInt(String columnName, int rowIndex) {
+		return Integer.parseInt(getString(columnName, rowIndex));
 	}
 
 	/**
@@ -172,25 +187,25 @@ public class CsvP5 {
 	 * 
 	 * @param rowIndex
 	 *            row number
-	 * @param column
+	 * @param columnIndex
 	 *            column number
 	 * @return integer
 	 */
-	public int getInt(int rowIndex, int column) {
-		return Integer.parseInt(getString(rowIndex, column));
+	public int getInt(int rowIndex, int columnIndex) {
+		return Integer.parseInt(getString(rowIndex, columnIndex));
 	}
 
 	/**
 	 * getFloat get the float of a specific row and column.
 	 * 
-	 * @param rowName
-	 *            name of the row
-	 * @param column
-	 *            column number
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return float
 	 */
-	public float getFloat(String rowName, int column) {
-		return Float.parseFloat(getString(rowName, column));
+	public float getFloat(String columnName, int rowIndex) {
+		return Float.parseFloat(getString(columnName, rowIndex));
 	}
 
 	/**
@@ -202,20 +217,21 @@ public class CsvP5 {
 	 *            column number
 	 * @return string
 	 */
-	public float getFloat(int rowIndex, int column) {
-		return Float.parseFloat(getString(rowIndex, column));
+	public float getFloat(int rowIndex, int columnIndex) {
+		return Float.parseFloat(getString(rowIndex, columnIndex));
 	}
 
 	/**
-	 * setRowName set a specific row name to a new value.
+	 * setColumnName 
+	 * Set a specific column name to a new value.
 	 * 
 	 * @param row
 	 *            Row number
-	 * @param what
-	 *            New row String
+	 * @param name
+	 *            New name for the column
 	 */
-	public void setRowName(int row, String what) {
-		data[row][0] = what;
+	public void setRowName(int column, String name) {
+		data[0][column] = name;
 	}
 
 	/**
@@ -223,28 +239,28 @@ public class CsvP5 {
 	 * 
 	 * @param rowIndex
 	 *            Row number
-	 * @param column
+	 * @param columnIndex
 	 *            Column number
-	 * @param what
-	 *            New row String
+	 * @param value
+	 *            New column String
 	 */
-	public void setString(int rowIndex, int column, String what) {
-		data[rowIndex][column] = what;
+	public void setString(int rowIndex, int columnIndex, String value) {
+		data[rowIndex][columnIndex] = value;
 	}
 
 	/**
 	 * setString set a specific String to a new value.
 	 * 
-	 * @param rowName
+	 * @param columnName
 	 *            Name of the row
-	 * @param column
+	 * @param row
 	 *            Column number
-	 * @param what
+	 * @param value
 	 *            New row String
 	 */
-	public void setString(String rowName, int column, String what) {
-		int rowIndex = getRowIndex(rowName);
-		data[rowIndex][column] = what;
+	public void setString(String columnName, int row, String value) {
+		int columnIndex = getColumnIndex(columnName);
+		data[row][columnIndex] = value;
 	}
 
 	/**
@@ -252,28 +268,28 @@ public class CsvP5 {
 	 * 
 	 * @param rowIndex
 	 *            Row number
-	 * @param column
+	 * @param columnIndex
 	 *            Column number
-	 * @param what
-	 *            New row integer
+	 * @param value
+	 *            New integer value
 	 */
-	public void setInt(int rowIndex, int column, int what) {
-		data[rowIndex][column] = PApplet.str(what);
+	public void setInt(int rowIndex, int columnIndex, int value) {
+		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
 	/**
 	 * setInt set a specific integer to a new value.
 	 * 
-	 * @param rowName
+	 * @param columnName
 	 *            Name of the row
-	 * @param column
+	 * @param rowIndex
 	 *            Column number
-	 * @param what
+	 * @param value
 	 *            New row String
 	 */
-	public void setInt(String rowName, int column, int what) {
-		int rowIndex = getRowIndex(rowName);
-		data[rowIndex][column] = PApplet.str(what);
+	public void setInt(String columnName, int rowIndex, int value) {
+		int columnIndex = getColumnIndex(columnName);
+		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
 	/**
@@ -281,28 +297,28 @@ public class CsvP5 {
 	 * 
 	 * @param rowIndex
 	 *            Row number
-	 * @param column
+	 * @param columnIndex
 	 *            Column number
-	 * @param what
+	 * @param value
 	 *            New row float
 	 */
-	public void setFloat(int rowIndex, int column, float what) {
-		data[rowIndex][column] = PApplet.str(what);
+	public void setFloat(int rowIndex, int columnIndex, float value) {
+		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
 	/**
 	 * setFloat set a specific float to a new value.
 	 * 
-	 * @param rowName
-	 *            Name of the row
-	 * @param column
-	 *            Column number
-	 * @param what
-	 *            New row float
+	 * @param columnName
+	 *            Name of the column
+	 * @param rowIndex
+	 *            Row number
+	 * @param value
+	 *            New value
 	 */
-	public void setFloat(String rowName, int column, float what) {
-		int rowIndex = getRowIndex(rowName);
-		data[rowIndex][column] = PApplet.str(what);
+	public void setFloat(String columnName, int rowIndex, float value) {
+		int columnIndex = getColumnIndex(columnName);
+		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
 }
