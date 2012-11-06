@@ -1,0 +1,5 @@
+# File types
+*.DS_Store
+
+# Folders
+distribution/
