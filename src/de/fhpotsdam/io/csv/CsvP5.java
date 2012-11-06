@@ -29,6 +29,11 @@ public class CsvP5 {
 		p5 = p;
 		loadFile(fileName);
 	}
+	
+	public CsvP5(PApplet p, String fileName, String separator) {
+		p5 = p;
+		loadFile(fileName, separator);
+	}
 
 	/**
 	 * loadFile load a csv File, skip empty and comments lines.
