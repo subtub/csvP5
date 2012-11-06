@@ -1,8 +1,6 @@
-package wrongPowder.io;
+package de.fhpotsdam.io.csv;
 
 import processing.core.*;
-
-/*GIT TEST EINS ZWOOOO*/
 
 /**
  * SeparatedValues
