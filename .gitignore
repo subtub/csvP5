@@ -1,0 +1,7 @@
+# File types
+*.DS_Store
+.classpath
+
+# Folders
+distribution/
+resources/code/de/
