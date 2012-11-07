@@ -26,9 +26,9 @@ public class CsvP5 {
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
 	 */
-	public CsvP5(PApplet p) {
-		p5 = p;
-	}
+	
+	// don't use this
+	private CsvP5(PApplet p) {}
 
 	public CsvP5(PApplet p, String filename) {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
