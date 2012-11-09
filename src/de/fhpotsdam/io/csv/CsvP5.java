@@ -401,6 +401,56 @@ public class CsvP5 {
 		}
 		return max == Integer.MAX_VALUE ? -1 : max;
 	}
+	
+	/**
+	 * TODO store min i in global var!?
+	 * @param columnIndex
+	 * @return
+	 */
+	public float minFloat(int columnIndex){
+		int iStart = hasHeadline ? 1 : 0;		
+		float min = Float.MAX_VALUE;
+		int minI = -1;	// index of smallest value
+		float tmp = Float.MAX_VALUE;
+		for(int i=iStart; i<rowCount; i++){
+			try{
+				tmp = Float.parseFloat(data[i][columnIndex]);
+			}catch(NumberFormatException e){
+				e.printStackTrace();
+				System.err.println("minFloat(): Parse error...");
+			}			
+			if(tmp < min){
+				min = tmp;
+				minI = i;
+			}
+		}
+		return min == Float.MAX_VALUE ? -1f : min;
+	}
+	
+	/**
+	 * TODO store max i in global var!?
+	 * @param columnIndex
+	 * @return
+	 */
+	public float maxFloat(int columnIndex){
+		int iStart = hasHeadline ? 1 : 0;		
+		float max = Float.MAX_VALUE;
+		int maxI = -1;	// index of smallest value
+		float tmp = Float.MAX_VALUE;
+		for(int i=iStart; i<rowCount; i++){
+			try{
+				tmp = Float.parseFloat(data[i][columnIndex]);
+			}catch(NumberFormatException e){
+				e.printStackTrace();
+				System.err.println("minFloat(): Parse error...");
+			}			
+			if(tmp > max){
+				max = tmp;
+				maxI = i;
+			}
+		}
+		return max == Float.MAX_VALUE ? -1f : max;
+	}
 
 	/**
 	 * setColumnName Set a specific column name to a new value.
