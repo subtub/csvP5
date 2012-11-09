@@ -14,7 +14,16 @@ public class CsvP5 {
 	public static final String DEFAULT_COMMENT = "#";
 	public static final String QUOTATION_MARK = "\"";
 
-	PApplet p5;
+	// needed for csv-file processing
+	PApplet p5;	
+	private String filename;
+	private String separator;
+	private String comment;
+	private boolean hasEnclosingQuotationMarks;
+	
+	// flags - will be set while processing
+	private boolean isComplete = false;
+	private int firstIncompleteLine = -1;
 
 	// Class Variables
 	public int columnCount, rowCount;
@@ -22,13 +31,9 @@ public class CsvP5 {
 	// console boolean to print out
 	public boolean console = false;
 
-	/**
-	 * a Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 */
-	
-	// don't use this
-	private CsvP5(PApplet p) {}
+	// Constructors ----------------------------------------------------------
+
+	private CsvP5() {} // don't use this
 
 	public CsvP5(PApplet p, String filename) {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
@@ -46,10 +51,28 @@ public class CsvP5 {
 		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
 	}
 
-	
+	/*
+	 * Get's called by every constructor to init the variables
+	 */	
 	public void init(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks){
 		this.p5 = p;
+		this.filename = filename;
+		this.separator = separator;
+		this.comment = comment;
+		this.hasEnclosingQuotationMarks = hasEnclosingQuotationMarks;
+	}
+	
+	/*
+	 * Starts the actual csv-processing
+	 */
+	public void load(){
+		resetFlags();
 		loadFile(filename, separator, comment, hasEnclosingQuotationMarks);
+	}
+	
+	private void resetFlags(){
+		isComplete = false;
+		firstIncompleteLine = -1;
 	}
 
 	/**
@@ -70,8 +93,10 @@ public class CsvP5 {
 		}
 
 		data = new String[rows.length][];
-
+		int nFirstLineElements = getNumberOfElements(rows);
+		
 		for (int i = 0; i < rows.length; i++) {
+			isComplete = true;
 			// skip empty rows
 			if (PApplet.trim(rows[i]).length() == 0) {
 				continue;
@@ -87,6 +112,14 @@ public class CsvP5 {
 			}
 			// Get rid of unnecessary leading and ending spaces
 			data[rowCount] = PApplet.trim(pieces);
+			// check if the number of elements is the same as in the first line
+			if(data[rowCount].length != nFirstLineElements){
+				// set flag if not
+				isComplete = false;
+				if(firstIncompleteLine != -1){
+					firstIncompleteLine = rowCount;
+				}
+			} 
 			rowCount++;
 		}
 		// resize the 'data' array as necessary
@@ -95,6 +128,34 @@ public class CsvP5 {
 		if(data.length >= 1){
 			columnCount = data[0].length;
 		}
+	}
+	
+	/**
+	 * Returns the number of elements in the first non-comment line
+	 * @param rows
+	 * @return
+	 */
+	public int getNumberOfElements(String[] rows){
+		// find first data line, skip empty lines
+		for (int i = 0; i < rows.length; i++) {
+			// skip empty rows
+			if (PApplet.trim(rows[i]).length() == 0) {
+				continue;
+			}
+			// skip comment lines
+			if (rows[i].startsWith(comment)) {
+				continue;
+			}
+
+			String[] pieces = PApplet.split(rows[i], separator);
+			if(hasEnclosingQuotationMarks){
+				removeEnclosingQuotationMarks(pieces);
+			}
+			// Get rid of unnecessary leading and ending spaces
+			pieces = PApplet.trim(pieces);
+			return pieces.length;
+		}
+		return 0;
 	}
 	
 	public void removeEnclosingQuotationMarks(String[] arr){
@@ -354,4 +415,11 @@ public class CsvP5 {
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
+	public boolean isComplete() {
+		return isComplete;
+	}
+
+	public int firstIncompleteLine() {
+		return firstIncompleteLine;
+	}
 }
