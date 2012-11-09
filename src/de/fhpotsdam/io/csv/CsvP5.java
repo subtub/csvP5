@@ -1,27 +1,35 @@
 package de.fhpotsdam.io.csv;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import processing.core.*;
 
 /**
- * SeparatedValues
+ * CsvP5
  * 
  * based on Ben Fry's Visualizing Data Book
+ * @author Tim Pulver, Paul Vollmer
+ * 
  */
 public class CsvP5 {
-	
+
 	// default separator and comment chars
 	public static final String DEFAULT_SEPARATOR = ",";
 	public static final String DEFAULT_COMMENT = "#";
 	public static final String QUOTATION_MARK = "\"";
+	public static final Class STRING_CLASS = new String().getClass();
 
 	// needed for csv-file processing
-	PApplet p5;	
+	PApplet p5;
 	private String filename;
 	private String separator;
 	private String comment;
 	private boolean hasEnclosingQuotationMarks;
-	
+	private boolean hasHeadline = true;
+
 	// flags - will be set while processing
+	private boolean isValid = false;
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
 
@@ -30,47 +38,56 @@ public class CsvP5 {
 	public String[][] data;
 	// console boolean to print out
 	public boolean console = false;
+	// user can set the formats for each row (auto-parsing)
+	//HashMap<Integer, ElementFormat> formats;
+	ArrayList[] data2;
 
 	// Constructors ----------------------------------------------------------
 
-	private CsvP5() {} // don't use this
+	private CsvP5() {
+	} // don't use this
 
 	public CsvP5(PApplet p, String filename) {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
-	
+
 	public CsvP5(PApplet p, String filename, String separator) {
 		init(p, filename, separator, DEFAULT_COMMENT, false);
 	}
-	
-	public CsvP5(PApplet p, String filename, String separator, boolean hasEnclosingQuotationMarks) {
-		init(p, filename, separator, DEFAULT_COMMENT, hasEnclosingQuotationMarks);
+
+	public CsvP5(PApplet p, String filename, String separator,
+			boolean hasEnclosingQuotationMarks) {
+		init(p, filename, separator, DEFAULT_COMMENT,
+				hasEnclosingQuotationMarks);
 	}
-	
-	public CsvP5(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+
+	public CsvP5(PApplet p, String filename, String separator, String comment,
+			boolean hasEnclosingQuotationMarks) {
 		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
 	}
 
 	/*
 	 * Get's called by every constructor to init the variables
-	 */	
-	public void init(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks){
+	 */
+	public void init(PApplet p, String filename, String separator,
+			String comment, boolean hasEnclosingQuotationMarks) {
 		this.p5 = p;
 		this.filename = filename;
 		this.separator = separator;
 		this.comment = comment;
 		this.hasEnclosingQuotationMarks = hasEnclosingQuotationMarks;
+		//formats = new HashMap<Integer, ElementFormat>();
 	}
-	
+
 	/*
 	 * Starts the actual csv-processing
 	 */
-	public void load(){
+	public void load() {
 		resetFlags();
 		loadFile(filename, separator, comment, hasEnclosingQuotationMarks);
 	}
-	
-	private void resetFlags(){
+
+	private void resetFlags() {
 		isComplete = false;
 		firstIncompleteLine = -1;
 	}
@@ -85,7 +102,8 @@ public class CsvP5 {
 	 * @param comment
 	 *            Set the comments sign
 	 */
-	public void loadFile(String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+	public void loadFile(String filename, String separator, String comment,
+			boolean hasEnclosingQuotationMarks) {
 		String[] rows = p5.loadStrings(filename);
 		if (console == true) {
 			System.out.println("### Load File: " + filename);
@@ -94,7 +112,7 @@ public class CsvP5 {
 
 		data = new String[rows.length][];
 		int nFirstLineElements = getNumberOfElements(rows);
-		
+
 		for (int i = 0; i < rows.length; i++) {
 			isComplete = true;
 			// skip empty rows
@@ -107,35 +125,36 @@ public class CsvP5 {
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
-			if(hasEnclosingQuotationMarks){
+			if (hasEnclosingQuotationMarks) {
 				removeEnclosingQuotationMarks(pieces);
 			}
 			// Get rid of unnecessary leading and ending spaces
 			data[rowCount] = PApplet.trim(pieces);
 			// check if the number of elements is the same as in the first line
-			if(data[rowCount].length != nFirstLineElements){
+			if (data[rowCount].length != nFirstLineElements) {
 				// set flag if not
 				isComplete = false;
-				if(firstIncompleteLine != -1){
+				if (firstIncompleteLine != -1) {
 					firstIncompleteLine = rowCount;
 				}
-			} 
+			}
 			rowCount++;
 		}
 		// resize the 'data' array as necessary
 		data = (String[][]) PApplet.subset(data, 0, rowCount);
 		// Store the number of columns (data entries per line)
-		if(data.length >= 1){
+		if (data.length >= 1) {
 			columnCount = data[0].length;
 		}
 	}
-	
+
 	/**
 	 * Returns the number of elements in the first non-comment line
+	 * 
 	 * @param rows
 	 * @return
 	 */
-	public int getNumberOfElements(String[] rows){
+	public int getNumberOfElements(String[] rows) {
 		// find first data line, skip empty lines
 		for (int i = 0; i < rows.length; i++) {
 			// skip empty rows
@@ -148,7 +167,7 @@ public class CsvP5 {
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
-			if(hasEnclosingQuotationMarks){
+			if (hasEnclosingQuotationMarks) {
 				removeEnclosingQuotationMarks(pieces);
 			}
 			// Get rid of unnecessary leading and ending spaces
@@ -157,18 +176,20 @@ public class CsvP5 {
 		}
 		return 0;
 	}
-	
-	public void removeEnclosingQuotationMarks(String[] arr){
-		for(int i=0; i<arr.length; i++){
-			if(arr[i].startsWith(QUOTATION_MARK) && arr[i].endsWith(QUOTATION_MARK) && arr[i].length() > 1){
+
+	public void removeEnclosingQuotationMarks(String[] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i].startsWith(QUOTATION_MARK)
+					&& arr[i].endsWith(QUOTATION_MARK) && arr[i].length() > 1) {
 				// remove starting and ending quotation marks
-				arr[i] = arr[i].substring(1, arr[i].length()-1);
+				arr[i] = arr[i].substring(1, arr[i].length() - 1);
 			}
 		}
 	}
 
 	/**
-	 * loadFile load a csv File, skip empty and comment lines (beginning with "#").
+	 * loadFile load a csv File, skip empty and comment lines (beginning with
+	 * "#").
 	 * 
 	 * @param filename
 	 *            Set the filename
@@ -180,7 +201,8 @@ public class CsvP5 {
 	}
 
 	/**
-	 * loadFile load a csv File, skip empty and comments lines (beginning with "#").
+	 * loadFile load a csv File, skip empty and comments lines (beginning with
+	 * "#").
 	 * 
 	 * @param filename
 	 *            set the filename
@@ -197,7 +219,7 @@ public class CsvP5 {
 	public int getRowCount() {
 		return rowCount;
 	}
-	
+
 	/**
 	 * getColumnCount Return the number of columns.
 	 * 
@@ -208,8 +230,8 @@ public class CsvP5 {
 	}
 
 	/**
-	 * getColumnIndex Find a column by its name, returns -1 if no column was found.
-	 * You can use this to search for a csv-heading.
+	 * getColumnIndex Find a column by its name, returns -1 if no column was
+	 * found. You can use this to search for a csv-heading.
 	 * 
 	 * @param name
 	 *            Name of the column
@@ -226,8 +248,7 @@ public class CsvP5 {
 	}
 
 	/**
-	 * getColumnName
-	 * Returns the name of a specific column.
+	 * getColumnName Returns the name of a specific column.
 	 * 
 	 * @param column
 	 *            Column number
@@ -266,58 +287,123 @@ public class CsvP5 {
 	/**
 	 * getInt get the integer of a specific row and column.
 	 * 
-	 * @param columnName
-	 *            name of the column
-	 * @param rowIndex
-	 *            row number
+	 * @param columnName name of the column
+	 * @param rowIndex row number
 	 * @return integer
 	 */
 	public int getInt(String columnName, int rowIndex) {
-		return Integer.parseInt(getString(columnName, rowIndex));
+		return getInt(rowIndex, getColumnIndex(columnName));
 	}
 
 	/**
 	 * getInt get the integer of a specific row and column.
 	 * 
-	 * @param rowIndex
-	 *            row number
-	 * @param columnIndex
-	 *            column number
+	 * @param rowIndex row number
+	 * @param columnIndex column number
 	 * @return integer
 	 */
 	public int getInt(int rowIndex, int columnIndex) {
-		return Integer.parseInt(getString(rowIndex, columnIndex));
+		String sElement = getString(rowIndex, columnIndex);
+		int ret = -1;
+		// return -1 when string is empty
+		if(sElement == ""){
+			return ret;
+		}
+		try {
+			ret = Integer.parseInt(sElement);
+		} catch (NumberFormatException e) {
+			System.err.println("Could not parse "
+							+ sElement
+							+ " to int! "
+							+ "Did you try to cast the headline or called setFormat() with a wrong format?");
+		}
+		return ret;
 	}
 
 	/**
 	 * getFloat get the float of a specific row and column.
 	 * 
-	 * @param columnName
-	 *            name of the column
-	 * @param rowIndex
-	 *            row number
-	 * @return float
+	 * @param columnName name of the column
+	 * @param rowIndex row number
+	 * @return
 	 */
 	public float getFloat(String columnName, int rowIndex) {
-		return Float.parseFloat(getString(columnName, rowIndex));
+		return getFloat(rowIndex, getColumnIndex(columnName));
 	}
 
 	/**
 	 * getFloat get the float of a specific row and column.
 	 * 
-	 * @param rowIndex
-	 *            row number
-	 * @param column
-	 *            column number
-	 * @return string
+	 * @param rowIndex row number
+	 * @param column column number
+	 * @return 
 	 */
 	public float getFloat(int rowIndex, int columnIndex) {
-		return Float.parseFloat(getString(rowIndex, columnIndex));
+		String sElement = getString(rowIndex, columnIndex);
+		float ret = -1;
+		try {
+			ret = Float.parseFloat(sElement);
+		} catch (NumberFormatException e) {
+			System.err.println("Could not parse "
+							+ sElement
+							+ " to float! "
+							+ "Did you try to cast the headline or called setFormat() with a wrong format?");
+		}
+		return ret;
+	}
+	
+	/**
+	 * TODO store min i in global var!?
+	 * @param columnIndex
+	 * @return
+	 */
+	public int minInt(int columnIndex){
+		int iStart = hasHeadline ? 1 : 0;		
+		int min = Integer.MAX_VALUE;
+		int minI = -1;	// index of smallest value
+		int tmp = Integer.MAX_VALUE;
+		for(int i=iStart; i<rowCount; i++){
+			try{
+				tmp = Integer.parseInt(data[i][columnIndex]);
+			}catch(NumberFormatException e){
+				e.printStackTrace();
+				System.err.println("minInt(): Parse error...");
+			}			
+			if(tmp < min){
+				min = tmp;
+				minI = i;
+			}
+		}
+		return min == Integer.MAX_VALUE ? -1 : min;
+	}
+	
+	/**
+	 * TODO store max i in global var!?
+	 * @param columnIndex
+	 * @return
+	 */
+	public int maxInt(int columnIndex){
+		int iStart = hasHeadline ? 1 : 0;		
+		int max = -1;
+		int maxI = -1;	// index of biggest value
+		int tmp = -1;
+		for(int i=iStart; i<rowCount; i++){
+			try{
+				tmp = Integer.parseInt(data[i][columnIndex]);
+			}catch(NumberFormatException e){
+				e.printStackTrace();
+				System.err.println("maxInt(): Parse error...");
+			}			
+			if(tmp > max){
+				max = tmp;
+				maxI = i;
+			}
+		}
+		return max == Integer.MAX_VALUE ? -1 : max;
 	}
 
 	/**
-	 * setColumnName 
-	 * Set a specific column name to a new value.
+	 * setColumnName Set a specific column name to a new value.
 	 * 
 	 * @param row
 	 *            Row number
@@ -414,6 +500,41 @@ public class CsvP5 {
 		int columnIndex = getColumnIndex(columnName);
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
+
+	/*
+	public Object get(int rowIndex, int columnIndex) {
+		if (formats.containsKey(rowIndex)) {
+			switch (formats.get(rowIndex)) {
+			case INT:
+				return getInt(rowIndex, columnIndex);
+			case FLOAT:
+				return getFloat(rowIndex, columnIndex);
+			case STRING:
+				return getString(rowIndex, columnIndex);
+			//case BOOLEAN: return getBoolean(rowIndex, columnIndex);
+			//break;
+			}
+		}
+		// if there is no format mapping, return String
+		return getString(rowIndex, columnIndex);
+	}
+	*/
+	
+	public void hasHeadline(boolean b){
+		this.hasHeadline = b;
+	}
+
+	/**
+	 * For auto-parsing, the format for each column can be set
+	 * 
+	 * @param column
+	 * @param format
+	 */
+	/*
+	public void setFormat(int column, ElementFormat format) {
+		formats.put(column, format);
+	}
+	*/
 
 	public boolean isComplete() {
 		return isComplete;
