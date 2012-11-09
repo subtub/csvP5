@@ -1,34 +1,10 @@
-//
-// CsvP5.java
-// csvP5 is released under the MIT License.
-//
-// Copyright (c) 2012, csvP5-Contributors, FH-Potsdam
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-
 package de.fhpotsdam.io.csv;
 
 import processing.core.*;
 
 /**
- * Reading CSV (Character Separated Values) Files
+ * SeparatedValues
+ * 
  * based on Ben Fry's Visualizing Data Book
  */
 public class CsvP5 {
@@ -43,59 +19,29 @@ public class CsvP5 {
 	// Class Variables
 	public int columnCount, rowCount;
 	public String[][] data;
+	// console boolean to print out
+	public boolean console = false;
 
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
-	 * @exampe SimpleExample
-	 * @param p
 	 */
 	public CsvP5(PApplet p) {
 		p5 = p;
 	}
-	
-	/**
-	 * A Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 * @param p
-	 * @param fileName Set the filename
-	 */
+
 	public CsvP5(PApplet p, String filename) {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
 	
-	/**
-	 * A Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 * @param p
-	 * @param fileName Set the filename
-	 * @param separator Set the separator to split CSV file
-	 */
 	public CsvP5(PApplet p, String filename, String separator) {
 		init(p, filename, separator, DEFAULT_COMMENT, false);
 	}
 	
-	/**
-	 * A Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 * @param p
-	 * @param filename Set the filename
-	 * @param separator Set the separator to split CSV file
-	 * @param hasEnclosingQuotationMarks
-	 */
 	public CsvP5(PApplet p, String filename, String separator, boolean hasEnclosingQuotationMarks) {
 		init(p, filename, separator, DEFAULT_COMMENT, hasEnclosingQuotationMarks);
 	}
 	
-	/**
-	 * A Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 * @param p
-	 * @param filename Set the filename
-	 * @param separator Set the separator to split CSV file
-	 * @param comments Set the comments sign
-	 * @param hasEnclosingQuotationMarks
-	 */
 	public CsvP5(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
 		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
 	}
@@ -107,13 +53,21 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Load a csv File, skip empty and comments lines.
-	 * @param filename Set the filename
-	 * @param separator Set the separator to split csv file
-	 * @param comment Set the comments sign
+	 * loadFile load a csv File, skip empty and comments lines.
+	 * 
+	 * @param filename
+	 *            Set the filename
+	 * @param separator
+	 *            Set the separator to split csv file
+	 * @param comment
+	 *            Set the comments sign
 	 */
 	public void loadFile(String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
 		String[] rows = p5.loadStrings(filename);
+		if (console == true) {
+			System.out.println("### Load File: " + filename);
+			System.out.println(rows);
+		}
 
 		data = new String[rows.length][];
 
@@ -153,24 +107,30 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Load a csv File, skip empty and comment lines (beginning with "#").
-	 * @param filename Set the filename
-	 * @param separator Set the separator to split csv file
+	 * loadFile load a csv File, skip empty and comment lines (beginning with "#").
+	 * 
+	 * @param filename
+	 *            Set the filename
+	 * @param separator
+	 *            Set the separator to split csv file
 	 */
 	public void loadFile(String filename, String separator) {
 		loadFile(filename, separator, DEFAULT_COMMENT, false);
 	}
 
 	/**
-	 * Load a csv File, skip empty and comments lines (beginning with "#").
-	 * @param filename Set the filename
+	 * loadFile load a csv File, skip empty and comments lines (beginning with "#").
+	 * 
+	 * @param filename
+	 *            set the filename
 	 */
 	public void loadFile(String filename) {
 		loadFile(filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
 
 	/**
-	 * Return the number of rows.
+	 * getRowCount Return the number of rows.
+	 * 
 	 * @return rowCount
 	 */
 	public int getRowCount() {
@@ -178,7 +138,8 @@ public class CsvP5 {
 	}
 	
 	/**
-	 * Return the number of columns.
+	 * getColumnCount Return the number of columns.
+	 * 
 	 * @return columnCount
 	 */
 	public int getColumnCount() {
@@ -186,9 +147,11 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Find a column by its name, returns -1 if no column was found.
+	 * getColumnIndex Find a column by its name, returns -1 if no column was found.
 	 * You can use this to search for a csv-heading.
-	 * @param name Name of the column
+	 * 
+	 * @param name
+	 *            Name of the column
 	 * @return integer
 	 */
 	public int getColumnIndex(String name) {
@@ -202,8 +165,11 @@ public class CsvP5 {
 	}
 
 	/**
+	 * getColumnName
 	 * Returns the name of a specific column.
-	 * @param column Column number
+	 * 
+	 * @param column
+	 *            Column number
 	 * @return String
 	 */
 	public String getColumnName(int column) {
@@ -211,9 +177,12 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Get the String of a specific row and column.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
+	 * getString get the String of a specific row and column.
+	 * 
+	 * @param rowIndex
+	 *            Row number
+	 * @param columnIndex
+	 *            Column number
 	 * @return String
 	 */
 	public String getString(int rowIndex, int columnIndex) {
@@ -221,9 +190,12 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Get the String of a specific row and column.
-	 * @param columnName Name of the column
-	 * @param rowIndex Row number
+	 * getString get the String of a specific row and column.
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return String
 	 */
 	public String getString(String columnName, int rowIndex) {
@@ -231,9 +203,12 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Get the integer of a specific row and column.
-	 * @param columnName Name of the column
-	 * @param rowIndex Row number
+	 * getInt get the integer of a specific row and column.
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return integer
 	 */
 	public int getInt(String columnName, int rowIndex) {
@@ -241,9 +216,12 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Get the integer of a specific row and column.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
+	 * getInt get the integer of a specific row and column.
+	 * 
+	 * @param rowIndex
+	 *            row number
+	 * @param columnIndex
+	 *            column number
 	 * @return integer
 	 */
 	public int getInt(int rowIndex, int columnIndex) {
@@ -251,9 +229,12 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Get the float of a specific row and column.
-	 * @param columnName Name of the column
-	 * @param rowIndex Row number
+	 * getFloat get the float of a specific row and column.
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return float
 	 */
 	public float getFloat(String columnName, int rowIndex) {
@@ -261,9 +242,12 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Get the float of a specific row and column.
-	 * @param rowIndex Row number
-	 * @param column Column number
+	 * getFloat get the float of a specific row and column.
+	 * 
+	 * @param rowIndex
+	 *            row number
+	 * @param column
+	 *            column number
 	 * @return string
 	 */
 	public float getFloat(int rowIndex, int columnIndex) {
@@ -271,29 +255,41 @@ public class CsvP5 {
 	}
 
 	/**
+	 * setColumnName 
 	 * Set a specific column name to a new value.
-	 * @param row Row number
-	 * @param name New name for the column
+	 * 
+	 * @param row
+	 *            Row number
+	 * @param name
+	 *            New name for the column
 	 */
 	public void setRowName(int column, String name) {
 		data[0][column] = name;
 	}
 
 	/**
-	 * Set a specific String to a new value.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @param value New column String
+	 * setString set a specific String to a new value.
+	 * 
+	 * @param rowIndex
+	 *            Row number
+	 * @param columnIndex
+	 *            Column number
+	 * @param value
+	 *            New column String
 	 */
 	public void setString(int rowIndex, int columnIndex, String value) {
 		data[rowIndex][columnIndex] = value;
 	}
 
 	/**
-	 * Set a specific String to a new value.
-	 * @param columnName Name of the row
-	 * @param row Column number
-	 * @param value New row String
+	 * setString set a specific String to a new value.
+	 * 
+	 * @param columnName
+	 *            Name of the row
+	 * @param row
+	 *            Column number
+	 * @param value
+	 *            New row String
 	 */
 	public void setString(String columnName, int row, String value) {
 		int columnIndex = getColumnIndex(columnName);
@@ -301,20 +297,28 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Set a specific integer to a new value.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @param value New integer value
+	 * setInt set a specific integer to a new value.
+	 * 
+	 * @param rowIndex
+	 *            Row number
+	 * @param columnIndex
+	 *            Column number
+	 * @param value
+	 *            New integer value
 	 */
 	public void setInt(int rowIndex, int columnIndex, int value) {
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
 	/**
-	 * Set a specific integer to a new value.
-	 * @param columnName Name of the row
-	 * @param rowIndex Column number
-	 * @param value New row String
+	 * setInt set a specific integer to a new value.
+	 * 
+	 * @param columnName
+	 *            Name of the row
+	 * @param rowIndex
+	 *            Column number
+	 * @param value
+	 *            New row String
 	 */
 	public void setInt(String columnName, int rowIndex, int value) {
 		int columnIndex = getColumnIndex(columnName);
@@ -322,20 +326,28 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Set a specific float to a new value.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @param value New row float
+	 * setFloat set a specific float to a new value.
+	 * 
+	 * @param rowIndex
+	 *            Row number
+	 * @param columnIndex
+	 *            Column number
+	 * @param value
+	 *            New row float
 	 */
 	public void setFloat(int rowIndex, int columnIndex, float value) {
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
 
 	/**
-	 * Set a specific float to a new value.
-	 * @param columnName Name of the column
-	 * @param rowIndex Row number
-	 * @param value New value
+	 * setFloat set a specific float to a new value.
+	 * 
+	 * @param columnName
+	 *            Name of the column
+	 * @param rowIndex
+	 *            Row number
+	 * @param value
+	 *            New value
 	 */
 	public void setFloat(String columnName, int rowIndex, float value) {
 		int columnIndex = getColumnIndex(columnName);
