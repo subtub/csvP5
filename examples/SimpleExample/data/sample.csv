@@ -1,0 +1,210 @@
+0,0,0,0,PH010,Doctor of Phil (by Public) ADC
+0,0,0,1,DRR52,RTS Pool (DSC - Unallocated)
+0,0,0,2,DRR55,RFW Transfers (DSC - Unallocated)
+0,0,1,0,XIPG1,X Inst Enrol Inbound ARTDES PG
+0,0,1,1,XIPG7,X Inst Enrol Inbound FELCS PG
+0,0,1,2,XIPG9,X Inst Enrol Inbound DSC PG
+0,0,2,0,XIUG1,X Inst Enrol Inbound ARTDES UG
+0,0,2,1,XIUG5,X Inst Enrol Inbound CENV UG
+0,0,2,2,XIUG9,X Inst Enrol Inbound DSC UG
+0,0,2,3,XIUG7,X Inst Enrol Inbound FELCS UG
+1,0,0,0,DR034,PHD (Architecture & Design)(R)
+1,0,0,1,DR036,PHD (Interior Design) (R)
+1,0,0,2,DR038,PHD(Landscape Architecture)(R)
+1,0,0,3,DR039,PHD (Design) (R)
+1,0,0,4,DR043,PHD (Fashion) (R)
+1,0,0,5,DR067,PHD (Architecture & Design)(R)
+1,0,0,6,MR048,M Arch (R)
+1,0,0,7,MR052,M Arts (Interior Design) (R)
+1,0,0,8,MR055,M Landscape Architecture (R)
+1,0,0,9,MR056,M Design (R)
+1,0,0,10,MR067,M Arts (Fashion) (R)
+1,0,0,11,DRR09,Research Commencement Target
+1,0,1,0,MC163,Master of Architecture
+1,0,1,1,MC172,M Landscape Architecture
+1,0,2,0,BP103,B Design (Landscape Arch)
+1,0,2,1,BP108,B Design (Industrial Design)
+1,0,2,2,BP194,B Design (Fashion)
+1,0,2,3,BP195,B Design (Industrial Design)
+1,0,2,4,BP196,B Design (Interior Design)
+1,0,2,5,BP239,B Des (LA)/B Urban & Reg Plan
+1,0,2,6,BP250,B Architectural Design
+1,0,2,7,BP256,Bachelor of Design
+2,0,0,0,DR035,PHD (Prop
+2,0,0,1,DR060,Doctor of Project Mgmt (R)
+2,0,0,2,DR072,PHD (Prop
+2,0,0,3,MR050,M App Sci (PropConstProjMg)(R)
+2,0,0,4,DRR10,Research Commencement Target
+2,0,1,0,MC065,M Project Management
+2,0,1,1,MC104,M Bus (Property) (C)
+2,0,1,2,GD063,Grad Dip in Project Management
+2,0,1,3,GD090,Graduate Diploma in Property
+2,0,1,4,GD096,Graduate Diploma in Valuations
+2,0,1,5,GC042,Grad Cert in Project Mgt
+2,0,1,6,GC051,Grad Cert in Property
+2,0,2,0,BP105,B App Sci (Construction Mgmt)
+2,0,2,1,BP145,B Bus (Property)
+2,0,2,2,BP208,B App Sci (Project Management)
+2,0,2,3,BP209,B App Sci (Property)
+2,0,2,4,BP210,B App Sci (Valuation)
+3,0,0,0,DR041,PHD (Fine Art) (R)
+3,0,0,1,DR057,Doctor of Fine Art (R)
+3,0,0,2,DR068,PHD (Fine Art) (R)
+3,0,0,3,MR058,M Arts (Fine Art) (R)
+3,0,0,4,DRR13,Research Commencement Target
+3,0,1,0,MC034,M Arts (Arts Management)
+3,0,1,1,MC078,Master of Fine Art (C)
+3,0,1,2,MC079,M Arts (Art Public Space) (C)
+3,0,1,3,GD028,Grad Dip in Arts Management
+3,0,1,4,GD070,Grad Dip Art in Public Space
+3,0,1,5,GC045,Grad Cert Art in Public Space
+3,0,2,0,BH052,B Arts (Fine Art) (Hons)
+3,0,2,1,BP164,B Arts (Fine Art)(OS)(HK)
+3,0,2,2,BP201,B Arts (Fine Art)
+4,0,0,0,DR042,PhD  (Visual Communication)(R)
+4,0,0,1,DR044,PHD (Communication Studies)(R)
+4,0,0,2,DR062,PhD (Creative Media) (R)
+4,0,0,3,DR069,PHD (Communication Studies)(R)
+4,0,0,4,DR070,PhD (Creative Media) (R)
+4,0,0,5,MR059,M Design (Comm Design) (R)
+4,0,0,6,MR060,M Arts (Photography) (R)
+4,0,0,7,MR064,M Arts (AIM) (R)
+4,0,0,8,MR066,M Arts (Creative Writing) (R)
+4,0,0,9,MR071,M Arts (Comm Studies) (R)
+4,0,0,10,DRR14,Research Commencement Target
+4,0,1,0,MC080,Master of Communication
+4,0,1,1,MC128,M Design (Graphic Comm)(C)
+4,0,1,2,MC130,Master of Advertising
+4,0,1,3,MC142,Master of Creative Media
+4,0,1,4,MC168,M Comm (Journalism)
+4,0,1,5,MC169,M Comm (Public Relations)
+4,0,1,6,MC170,M Comm (Book Publishing)
+4,0,1,7,MC184,Master of Communication Design
+4,0,1,8,GD071,Grad Dip in Graphic Design
+4,0,1,9,GD073,Grad Dip in Editing & Publishg
+4,0,1,10,GD074,Graduate Diploma in Journalism
+4,0,1,11,GD075,Grad Dip in Public Relations
+4,0,1,12,GD127,Grad Dip in Graphic Comm
+4,0,1,13,GD130,Grad Dip in Advertising
+4,0,1,14,GD143,Grad Dip of Creative Media
+4,0,1,15,GD177,Grad Dip Communication Design
+4,0,1,16,GC072,Grad Cert Graph Communication
+4,0,1,17,GC076,Grad Cert in Advertising
+4,0,1,18,GC080,Grad Cert Anim & Interact Med
+4,0,2,0,BH020,B Design (Comm Design) (Hons)
+4,0,2,1,BH053,B Comm (Advert-Create) (Hons)
+4,0,2,2,BH054,B Comm (Journalism) (Hons)
+4,0,2,3,BH055,B Comm (Media) (Hons)
+4,0,2,4,BH056,B Comm (Prof Comm) (Hons)
+4,0,2,5,BH057,B Comm (PublicRelations) (Hon)
+4,0,2,6,BH061,B Arts (Creative Media) (Hons)
+4,0,2,7,BH066,B Media & Communication (Hons)
+4,0,2,8,BP047,B Arts (Music Industry)
+4,0,2,9,BP115,B Design (CommunicationDesign)
+4,0,2,10,BP116,B Sci (Sci Photography)
+4,0,2,11,BP117,B Arts (Photography)
+4,0,2,12,BP120,B Arts (Multimedia)
+4,0,2,13,BP203,B Arts (Anim & Interact Media)
+4,0,2,14,BP213,B Arts (Digital Art)
+4,0,2,15,BP214,B Design (Games)
+4,0,2,16,BP219,B Communication (Advertising)
+4,0,2,17,BP220,B Comm (Journalism)
+4,0,2,18,BP221,B Comm (Media)
+4,0,2,19,BP222,B Comm (Prof Comm)
+4,0,2,20,BP223,B Comm (Public Relations)
+4,0,2,21,BP224,B Comm (Mass Comm)
+4,0,2,22,BP257,B Arts (Creative Writing)
+4,1,2,0,AD016,Ass Deg Prof Writing & Editing
+5,0,0,0,DR063,PHD (Textiles) (R)
+5,0,0,1,DR074,PHD (Textiles) (R)
+5,0,0,2,MR068,M Arts (Textile Design) (R)
+5,0,0,3,MR069,M Tech (Textiles) (R)
+5,0,0,4,DRR15,Research Commencement Target
+5,0,1,0,MC164,Master of Fashion and Textiles
+5,0,2,0,BP121,B Arts (Textile Design)
+5,0,2,1,BP123,B App Sci (Textile Technology)
+5,0,2,2,BP211,B App Sci (Fashion Technology)
+5,0,2,3,BP212,B App Sci (Fash & Text Merch)
+5,1,2,0,AD013,Ass Degree in FashTextMerch
+5,1,2,1,AD014,Ass Deg in Fashion Des & Tech
+6,0,0,0,DR015,PHD (Education) (R)
+6,0,0,1,DR059,Doctor of Education (R)
+6,0,0,2,DR071,PHD (Education) (R)
+6,0,0,3,MR018,M Education (R)
+6,0,0,4,MR019,M Arts (Education) (R)
+6,0,0,5,DRR16,Research Commencement Target
+6,0,1,0,MC037,M Ed (Ed Lead & Mgt) (C)
+6,0,1,1,MC039,Master of Education
+6,0,1,2,MC077,M Soc Sci (Career Ed & Dev)(C)
+6,0,1,3,GD031,Grad Dip in Educ Lead & Mgt
+6,0,1,4,GD034,Grad Dip Early Childh'd Teach
+6,0,1,5,GD037,Grad Dip Adult & VocEd & Train
+6,0,1,6,GD069,Grad Dip in Careers Educ & Dev
+6,0,1,7,GD108,Grad Dip Educ (Early Childhd)
+6,0,1,8,GD109,Grad Dip Educ (Primary)
+6,0,1,9,GD110,Grad Dip Educ (Secondary)
+6,0,1,10,GD170,Grad Dip in App Human Rights
+6,0,1,11,GC013,Grad Cert in Educ Lead & Mgt
+6,0,1,12,GC017,Grad Cert Adult & VocEd & Trai
+6,0,1,13,GC020,Grad Cert Tert Teach & Learn
+6,0,1,14,GC044,Grad Cert in Careers Ed & Dev
+6,0,1,15,GC139,Grad Cert in App Human Rights
+6,0,1,16,GC147,PGRD Cert Primary Math Teach
+6,0,2,0,BP042,Bachelor of Education
+6,0,2,1,BP046,Bachelor of Education
+6,0,2,2,BP248,BSci (AppSciences)/B Education
+6,0,2,3,BP249,B Educ/BAppSci(Disability)
+6,0,2,4,BP258,B Education (Brunswick)
+6,0,2,5,BP260,B Education (Early Child Edu)
+7,0,0,0,DR001,PhD (Human Services Res) (R)
+7,0,0,1,DR005,PhD (International Studies)(R)
+7,0,0,2,DR006,PhD (Applied Criminology) (R)
+7,0,0,3,DR040,PHD (GSSSP) (R)
+7,0,0,4,DR073,PHD (GSSSP) (R)
+7,0,0,5,DRR17,Research Commencement Target
+7,0,0,6,MR006,M Arts (AppliedCriminology)(R)
+7,0,0,7,MR007,M Social Work (R)
+7,0,0,8,MR023,M Arts (Intn'l Studies) (R)
+7,0,0,9,MR057,M Social Science (GSSSP (R)
+7,0,1,0,MC072,M Soc Sci (Env & Planning) (C)
+7,0,1,1,MC073,M Soc Sci (Internat'l Dev) (C)
+7,0,1,2,MC074,M Soc Sci (IntUrban&EnvMgt)(C)
+7,0,1,3,MC075,M Soc Sci (Pol & Hum Serv) (C)
+7,0,1,4,MC137,M Soc Sci (Crim Just Admin)(C)
+7,0,1,5,MC150,Master of Social Work
+7,0,1,6,MC167,M Soc Sci (Trans & Interpret)
+7,0,1,7,MC175,M Economic Development
+7,0,1,8,MC178,M Youth Prac & Prof Leadership
+7,0,1,9,GD066,Grad Dip in International Dev
+7,0,1,10,GD067,Grad Dip Internat'l Urb&EnvMgt
+7,0,1,11,GD068,Grad Dip in Policy&Human Servs
+7,0,1,12,GD125,Grad Dip in Enviro & Planning
+7,0,1,13,GD137,Grad Dip in Crim Justice Admin
+7,0,1,14,GD168,Grad Dip Translate & Interpret
+7,0,1,15,GD172,Grad Dip Economic Development
+7,0,1,16,GC078,Grad Cert in Env & Planning
+7,0,1,17,GC079,Grad Cert in International Dev
+7,0,1,18,GC095,Grad Cert in Crim JusticeAdmin
+7,0,1,19,GC105,Grad Cert in Pol & Hum Serv
+7,0,1,20,GC106,Grad Cert in IntUrban&EnvMgt
+7,0,1,21,GC111,Grad Cert Mgmt (Public Sector)
+7,0,1,22,GC137,Grad Cert Translate & Interp
+7,0,1,23,GC141,Grad Cert Economic Development
+7,0,1,24,GC144,Grad Cert Adv Family Supp Prac
+7,0,1,25,XIP10,X Inst Enrol Inbound GSSSP PG
+7,0,2,0,BH016,B Soc Sci (Hons)
+7,0,2,1,BH048,B Urban & Regional Plan (Hons)
+7,0,2,2,BH049,B Arts (Intn'l Studies) (Hons)
+7,0,2,3,BH060,B Arts (Crim Just Admin) (Hon)
+7,0,2,4,BP000,B Soc Sci (Environment)
+7,0,2,5,BP023,B Arts(Criminal Justice Admin)
+7,0,2,6,BP026,Bachelor of Social Work
+7,0,2,7,BP048,B Arts (International Studies)
+7,0,2,8,BP110,B SocSci (Policy and Research)
+7,0,2,9,BP112,B Soc Sci (Psychology)
+7,0,2,10,BP113,B Social Work/BSoc Sci (Psych)
+7,0,2,11,BP188,B Urban & Regional Planning
+7,0,2,12,BP191,B Soc Sci (Youth Work)
+7,0,2,13,BP193,B EnvSc/BSocSc (Env)
+7,0,2,14,BP204,B SocSc (Legal & Dispute Stud)
+7,1,2,0,DP005,Diploma of Languages
