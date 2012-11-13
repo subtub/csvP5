@@ -44,10 +44,10 @@ import processing.core.*;
  * @example SimpleExample.pde
  */
 public class CsvP5 {
-	private static final String DEFAULT_SEPARATOR = ",";
-	private static final String DEFAULT_COMMENT = "#";
-	private static final String QUOTATION_MARK = "\"";
-	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
+	public static final String DEFAULT_SEPARATOR = ",";
+	public static final String DEFAULT_COMMENT = "#";
+	public static final String QUOTATION_MARK = "\"";
+	public static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
 	PApplet p5; // processing reference for text loading and other stuff
 	private String filename; // filename to load
