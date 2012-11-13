@@ -44,9 +44,10 @@ import processing.core.*;
  * @example SimpleExample.pde
  */
 public class CsvP5 {
-	public static final String DEFAULT_SEPARATOR = ",";
-	public static final String DEFAULT_COMMENT = "#";
-	public static final String QUOTATION_MARK = "\"";
+	private static final String DEFAULT_SEPARATOR = ",";
+	private static final String DEFAULT_COMMENT = "#";
+	private static final String QUOTATION_MARK = "\"";
+	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
 	PApplet p5; // processing reference for text loading and other stuff
 	private String filename; // filename to load
@@ -89,7 +90,7 @@ public class CsvP5 {
 	 */
 	public CsvP5(PApplet p) {
 		LOGGER.log( Level.FINEST, "Constructor called");
-		init(p, "", DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
+		init(p, "", DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class CsvP5 {
 	 */
 	public CsvP5(PApplet p, String filename) {
 		LOGGER.log( Level.FINEST, "Constructor called");
-		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
+		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
 	
 	/**
@@ -112,7 +113,7 @@ public class CsvP5 {
 	 */
 	public CsvP5(PApplet p, String filename, String separator) {
 		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, DEFAULT_COMMENT, false);
+		init(p, filename, separator, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
 	
 	/**
@@ -122,13 +123,13 @@ public class CsvP5 {
 	 * @param p Use "this" from within your Processing main sketch
 	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 * @param hasEnclosingQuotationMarks If the data fields are surrounded by 
+	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
 	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
 	 */
-	public CsvP5(PApplet p, String filename, String separator, boolean hasEnclosingQuotationMarks) {
+	public CsvP5(PApplet p, String filename, String separator, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINEST, "Constructor called");
 		init(p, filename, separator, DEFAULT_COMMENT,
-				hasEnclosingQuotationMarks);
+				removeEnclosingQuotationMarks);
 	}
 	/**
 	 * Constructor with additional separator, comment character and quotation-mark arguments, use this if your csv-file 
@@ -137,12 +138,12 @@ public class CsvP5 {
 	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
 	 * @param comment The character/string which is used to introduce comments
-	 * @param hasEnclosingQuotationMarks If the data fields are surrounded by 
+	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
 	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
 	 */
-	public CsvP5(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+	public CsvP5(PApplet p, String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
+		init(p, filename, separator, comment, removeEnclosingQuotationMarks);
 	}
 	
 	/*
@@ -509,12 +510,12 @@ public class CsvP5 {
 	 * @param filename The filename of the csv-file within the data directory
 	 * @param separator Separator char/string
 	 * @param comments Introducing char/string for comments
-	 * @param hasEnclosingQuotationMarks Whether or not the data-elements are 
+	 * @param removeEnclosingQuotationMarks Whether or not the data-elements are 
 	 * surrounded by quotation marks 
 	 */
-	private void loadFile(String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+	private void loadFile(String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
-				+ separator + ", comment: " + comment + ", hasEnclosingQuotationMarks: " + hasEnclosingQuotationMarks
+				+ separator + ", comment: " + comment + ", removeEnclosingQuotationMarks: " + removeEnclosingQuotationMarks
 				+ "hasHeadline: " + hasHeadline);
 		if(hasHeadline){
 			headlines = new HashMap<Integer, String>();
@@ -537,7 +538,7 @@ public class CsvP5 {
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
-			if (hasEnclosingQuotationMarks) {
+			if (removeEnclosingQuotationMarks) {
 				removeEnclosingQuotationMarks(pieces);
 			}
 			// Get rid of unnecessary leading and ending spaces
