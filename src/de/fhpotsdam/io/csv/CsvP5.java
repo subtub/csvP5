@@ -22,7 +22,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-//testest
+
 package de.fhpotsdam.io.csv;
 
 import java.util.ArrayList;
@@ -343,6 +343,14 @@ public class CsvP5 {
 		LOGGER.log(Level.FINE, "Filename set to " + filename);
 		this.filename = filename;
 	}
+	
+	/**
+	 * If there are problems, try to call this using <i>Level.FINEST</i>. 
+	 */
+	public static void setDebugLevel(Level level){
+		debugLevel = level;
+	}
+	
 	/*
 	 * ======================================================================|
 	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -481,7 +489,7 @@ public class CsvP5 {
 		}
 		// resize the 'data' array as necessary, 
 		// if there is the headline remove it from the array
-		data = (String[][]) PApplet.subset(data, startIndex, rowCount);
+		data = (String[][]) PApplet.subset(data, startIndex, rowCount-startIndex);
 		// update rowCount
 		rowCount = data.length;
 		// Store the number of columns (data entries per line)
