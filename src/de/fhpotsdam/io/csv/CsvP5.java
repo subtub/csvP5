@@ -54,7 +54,6 @@ public class CsvP5 {
 	private HashMap<Integer, String> headlines; // stores the headlines (column index, headline name)
 
 	// flags - will be set while processing
-	//private boolean isValid = false;
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
 
@@ -302,6 +301,36 @@ public class CsvP5 {
 		return ret;
 	}
 	
+	/*
+	 * ======================================================================|
+	 * PUBLIC SETTERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
+	 */
+	
+	/**
+	 * Assigns a new separator, default is {@link #DEFAULT_SEPARATOR}
+	 * @param separator the new separator to use
+	 */
+	public void setSeparator(String separator){
+		this.separator = separator;
+	}
+	
+	/**
+	 * Sets a new comment indicator, default is {@link #DEFAULT_COMMENT}
+	 * @param comment the new comment indicator
+	 */
+	public void setCommentIndicator(String comment){
+		this.comment = comment;
+	}
+	
+	/**
+	 * Sets a new relative filename pointing to a CSV-File within the data directory. 
+	 * (e.g. "awesome_data.csv")
+	 * @param filename
+	 */
+	public void setFilename(String filename){
+		this.filename = filename;
+	}
 	/*
 	 * ======================================================================|
 	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
