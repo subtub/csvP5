@@ -27,7 +27,8 @@ package de.fhpotsdam.io.csv;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.Map;
+import java.util.logging.Logger;
 import processing.core.*;
 
 /**
@@ -40,139 +41,359 @@ import processing.core.*;
  * @example SimpleExample.pde
  */
 public class CsvP5 {
-
-	/**
-	 * The Default separator as char
-	 */
-	//  TODO: change data type to char
 	public static final String DEFAULT_SEPARATOR = ",";
-	/**
-	 * The Default Comment string is '#'
-	 */
-	// TODO: change data type to char
 	public static final String DEFAULT_COMMENT = "#";
-	/**
-	 * A static Quotation mark (\) char
-	 */
-	// TODO: change data type to char
 	public static final String QUOTATION_MARK = "\"";
-	/**
-	 * 
-	 */
-	public static final Class STRING_CLASS = new String().getClass();
 
-	// needed for csv-file processing
-	PApplet p5;
-	private String filename;
-	private String separator;
-	private String comment;
+	PApplet p5; // processing reference for text loading and other stuff
+	private String filename; // filename to load
+	private String separator; // default separator is ','
+	private String comment; // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasHeadline = true;
+	private boolean hasHeadline = true; // if the document has a headline
+	private HashMap<Integer, String> headlines; // stores the headlines (column index, headline name)
 
 	// flags - will be set while processing
-	private boolean isValid = false;
+	//private boolean isValid = false;
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
 
-	// Class Variables
+	// contains number of rows/columns after loading a file
+	// rowCounts will not contain headline if hasHeadline(true) has been called
 	public int columnCount, rowCount;
+	// the actual csv data [row][column]
 	public String[][] data;
+
+	/*
+	 * ======================================================================|
+	 * CONSTRUCTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
+	 */
 	
-	// user can set the formats for each row (auto-parsing)
-	//HashMap<Integer, ElementFormat> formats;
-	ArrayList[] data2;
-
-	// Constructors ----------------------------------------------------------
-
-	private CsvP5() {
-	} // don't use this
+	/**
+	 * Forbidden, use the other constructors instead
+	 */
+	@SuppressWarnings("unused")
+	private CsvP5(){}
 
 	/**
-	 * The Constructor to initialize a csv file settings.
-	 * @param p
-	 * @param filename
+	 * Constructor with least arguments, use this if your csv-file  
+	 * uses commas as separator and '#' for comments.
+	 * @param p Use "this" from within your Processing main sketch
+	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 */
 	public CsvP5(PApplet p, String filename) {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
-
+	
 	/**
-	 * 
-	 * @param p
-	 * @param filename
-	 * @param separator
+	 * Constructor with additional separator argument, use this if your csv-file 
+	 * <b>not</b> uses commas as separators.
+	 * @param p Use "this" from within your Processing main sketch
+	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
+	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
 	 */
 	public CsvP5(PApplet p, String filename, String separator) {
 		init(p, filename, separator, DEFAULT_COMMENT, false);
 	}
-
+	
 	/**
-	 * 
-	 * @param p
-	 * @param filename
-	 * @param separator
-	 * @param hasEnclosingQuotationMarks
+	 * Constructor with additional separator and quotation-mark arguments, use this if your csv-file 
+	 * <b>not</b> uses commas as separators and has encolsing quotation marks 
+	 * e.g. "data1";"data2",... 
+	 * @param p Use "this" from within your Processing main sketch
+	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
+	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
+	 * @param hasEnclosingQuotationMarks If the data fields are surrounded by 
+	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
 	 */
-	public CsvP5(PApplet p, String filename, String separator,
-			boolean hasEnclosingQuotationMarks) {
+	public CsvP5(PApplet p, String filename, String separator, boolean hasEnclosingQuotationMarks) {
 		init(p, filename, separator, DEFAULT_COMMENT,
 				hasEnclosingQuotationMarks);
 	}
-
 	/**
-	 * 
-	 * @param p
-	 * @param filename
-	 * @param separator
-	 * @param comment
-	 * @param hasEnclosingQuotationMarks
+	 * Constructor with additional separator, comment character and quotation-mark arguments, use this if your csv-file 
+	 * <b>not</b> uses commas as separatorsand <b>not</> uses '#' as comment indicators. 
+	 * @param p Use "this" from within your Processing main sketch
+	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
+	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
+	 * @param comment The character/string which is used to introduce comments
+	 * @param hasEnclosingQuotationMarks If the data fields are surrounded by 
+	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
 	 */
-	public CsvP5(PApplet p, String filename, String separator, String comment,
-			boolean hasEnclosingQuotationMarks) {
+	public CsvP5(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
 		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
 	}
 	
-	/**
-	 * Get's called by every constructor to init the variables 
-	 * @param p
-	 * @param filename
-	 * @param separator
-	 * @param comment
-	 * @param hasEnclosingQuotationMarks
+	/*
+	 * ======================================================================|
+	 * PUBLIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
 	 */
-	public void init(PApplet p, String filename, String separator,
-			String comment, boolean hasEnclosingQuotationMarks) {
-		this.p5 = p;
-		this.filename = filename;
-		this.separator = separator;
-		this.comment = comment;
-		this.hasEnclosingQuotationMarks = hasEnclosingQuotationMarks;
-		//formats = new HashMap<Integer, ElementFormat>();
-	}
 
 	/**
-	 * Starts the actual csv-processing
+	 * Resets the processing-flags and starts the actual CSV-processing.
 	 */
 	public void load() {
 		resetFlags();
 		loadFile(filename, separator, comment, hasEnclosingQuotationMarks);
 	}
 
+	/**
+	 * Has to be called if your CSV-file has a headline. Default is no headline. 
+	 * @param b True, if is has a headline, false otherwise
+	 */
+	public void hasHeadline(boolean b){
+		this.hasHeadline = b;
+	}
+
+	/**
+	 * Returns true, if there were no problems parsing the file. 
+	 * @return
+	 */
+	public boolean isComplete() {
+		return isComplete;
+	}
+
+	/**
+	 * If {@link #isComplete()} returns true, which means, there were errors 
+	 * parsing the CSV-file, this will return the first line with parsing-errors. 
+	 * @return The first problematic line.
+	 */
+	public int firstIncompleteLine() {
+		return firstIncompleteLine;
+	}
+	
+	/**
+	 * Returns the number of rows. If the document has headlines and 
+	 * hasHeadlines(true) has been called before CSV-import, this will <b>not</b> 
+	 * contain the headline.
+	 * @return rowCount Number of rows (without headline)
+	 */
+	public int getRowCount() {
+		return rowCount;
+	}
+
+	/**
+	 * Returns the number of columns.
+	 * @return columnCount Number of columns
+	 */
+	public int getColumnCount() {
+		return columnCount;
+	}
+
+	/**
+	 * Returns a column index by its name, returns -1 if no column has been
+	 * found. This can be used to find out a column index of a certain CSV-headline. 
+	 * Note, that this does not take care of the fact, that there can be more than 
+	 * one headlines with the same name. 
+	 * @param name name of the column
+	 * @return integer index value of the column
+	 */
+	public int getColumnIndex(String name) {
+		for (Map.Entry<Integer, String> e : headlines.entrySet()) {
+		    int key = e.getKey();
+		    String value = e.getValue();
+		    if(value.equals(name)){
+		    	return key;
+		    }
+		}
+		System.err.println("No column named '" + name + "' was found");
+		return -1;
+	}
+
+	/**
+	 * Returns the name of a headline. To get the first headline, pass <i>0</>. 
+	 * @param column the Column number, which name you want to know
+	 * @return String The column name (headline)
+	 */
+	public String getHeadlineName(int column) {
+		if(headlines.containsKey(column)){
+			return headlines.get(column);
+		}
+		else{
+			System.err.println("There is no headline with index " + column 
+					+ ". Did you call hasHeadline(true) before loading the file?");
+			return "";
+		}
+	}
+
+	/**
+	 * Returns the String of a specific row and column (untouched from the CSV-file).
+	 * @param rowIndex Row number
+	 * @param columnIndex Column number
+	 * @return String The data field as String
+	 */
+	public String getString(int rowIndex, int columnIndex) {
+		return data[rowIndex][columnIndex];
+	}
+
+	/**
+	 * Returns the String of a specific row and column.
+	 * @param columnName name of the column
+	 * @param rowIndex row number
+	 * @return String The data field as String
+	 */
+	public String getString(String columnName, int rowIndex) {
+		return getString(rowIndex, getColumnIndex(columnName));
+	}
+
+	/**
+	 * Returns the integer of a specific row and column.
+	 * @param columnName name of the column
+	 * @param rowIndex row number
+	 * @return integer The data field as integer
+	 */
+	public int getInt(String columnName, int rowIndex) {
+		return getInt(rowIndex, getColumnIndex(columnName));
+	}
+
+	/**
+	 * Returns the integer of a specific row and column.
+	 * @param rowIndex row number
+	 * @param columnIndex column number
+	 * @return integer The data field as integer
+	 */
+	public int getInt(int rowIndex, int columnIndex) {
+		String sElement = getString(rowIndex, columnIndex);
+		int ret = -1;
+		// return -1 when string is empty
+		if(sElement == ""){
+			return ret;
+		}
+		try {
+			ret = Integer.parseInt(sElement);
+		} catch (NumberFormatException e) {
+			System.err.println("Could not parse "
+							+ sElement
+							+ " to int! "
+							+ "Seems like you tried to parse a non-integer data field.");
+		}
+		return ret;
+	}
+
+	/**
+	 * Returns the float of a specific row and column.
+	 * @param columnName name of the column
+	 * @param rowIndex row number
+	 * @return The data field as float
+	 */
+	public float getFloat(String columnName, int rowIndex) {
+		return getFloat(rowIndex, getColumnIndex(columnName));
+	}
+
+	/**
+	 * Returns the float of a specific row and column.
+	 * @param columnName name of the column
+	 * @param rowIndex row number
+	 * @return The data field as float
+	 */
+	public float getFloat(int rowIndex, int columnIndex) {
+		String sElement = getString(rowIndex, columnIndex);
+		float ret = -1;
+		try {
+			ret = Float.parseFloat(sElement);
+		} catch (NumberFormatException e) {
+			System.err.println("Could not parse "
+							+ sElement
+							+ " to float! "
+							+ "Seems like you tried to parse a non-integer data field.");
+		}
+		return ret;
+	}
+	
+	/*
+	 * ======================================================================|
+	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
+	 */
+	
+	/**
+	 * Get's called by every constructor to store / initiate the class variables. 
+	 */
+	private void init(PApplet p, String filename, String separator,
+			String comment, boolean hasEnclosingQuotationMarks) {
+		this.p5 = p;
+		this.filename = filename;
+		this.separator = separator;
+		this.comment = comment;
+		this.hasEnclosingQuotationMarks = hasEnclosingQuotationMarks;
+	}
+
+	/**
+	 * Resets the processing flags, which can be used to see if there were 
+	 * errors while loading/parsing the file
+	 */
 	private void resetFlags() {
 		isComplete = false;
 		firstIncompleteLine = -1;
 	}
+	
+	/**
+	 * Returns the number of elements in the first non-comment line
+	 * 
+	 * @param rows The CSV-data
+	 * @return Number of elements
+	 */
+	private int getNumberOfElements(String[] rows) {
+		// find first data line, skip empty lines
+		for (int i = 0; i < rows.length; i++) {
+			// skip empty rows
+			if (PApplet.trim(rows[i]).length() == 0) {
+				continue;
+			}
+			// skip comment lines
+			if (rows[i].startsWith(comment)) {
+				continue;
+			}
+			String[] pieces = PApplet.split(rows[i], separator);
+			if (hasEnclosingQuotationMarks) {
+				removeEnclosingQuotationMarks(pieces);
+			}
+			// Get rid of unnecessary leading and ending spaces
+			// and return number of elements of first "usable" line
+			pieces = PApplet.trim(pieces);
+			return pieces.length;
+		}
+		return 0; // only comments and blank lines
+	}
 
 	/**
-	 * loadFile load a csv File, skip empty and comments lines.
-	 * @param filename Set the filename
-	 * @param separator Set the separator to split csv file
-	 * @param comment Set the comments sign
+	 * Checks if the elemnets start and end with quotation marks (e.g. "data" -> data) 
+	 * and deltes them if found.  
+	 * This will only delete the <b>first</b> and </last> quotation mark. 
+	 * If there are more, they will be left untouched.
+	 * @param arr Array of Strings
 	 */
-	public void loadFile(String filename, String separator, String comment,
-			boolean hasEnclosingQuotationMarks) {
+	private void removeEnclosingQuotationMarks(String[] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i].startsWith(QUOTATION_MARK)
+					&& arr[i].endsWith(QUOTATION_MARK) && arr[i].length() > 1) {
+				// remove starting and ending quotation marks
+				arr[i] = arr[i].substring(1, arr[i].length() - 1);
+			}
+		}
+	}
+
+	/**
+	 * Does the actual CSV file parsing, skips empty and commented-out lines.  
+	 * Gets called by other loadFile() methods.  
+	 * @param filename The filename of the csv-file within the data directory
+	 * @param separator Separator char/string
+	 * @param comments Introducing char/string for comments
+	 * @param hasEnclosingQuotationMarks Whether or not the data-elements are 
+	 * surrounded by quotation marks 
+	 */
+	private void loadFile(String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+		if(hasHeadline){
+			headlines = new HashMap<Integer, String>();
+		}
 		String[] rows = p5.loadStrings(filename);
-		
+		if (true) {
+			System.out.println("### Load File: " + filename);
+			System.out.println(rows);
+		}
+
 		data = new String[rows.length][];
 		int nFirstLineElements = getNumberOfElements(rows);
 
@@ -203,423 +424,121 @@ public class CsvP5 {
 			}
 			rowCount++;
 		}
-		// resize the 'data' array as necessary
-		data = (String[][]) PApplet.subset(data, 0, rowCount);
+		int startIndex = 0;
+		if(hasHeadline){
+			startIndex = 1;
+			// store the headlines
+			for(int i=0; i<nFirstLineElements; i++){
+				headlines.put(i, data[0][i]);
+			}
+		}
+		// resize the 'data' array as necessary, 
+		// if there is the headline remove it from the array
+		data = (String[][]) PApplet.subset(data, startIndex, rowCount);
+		// update rowCount
+		rowCount = data.length;
 		// Store the number of columns (data entries per line)
 		if (data.length >= 1) {
 			columnCount = data[0].length;
 		}
-	}
-
-	/**
-	 * Returns the number of elements in the first non-comment line
-	 * @param rows
-	 * @return
-	 */
-	public int getNumberOfElements(String[] rows) {
-		// find first data line, skip empty lines
-		for (int i = 0; i < rows.length; i++) {
-			// skip empty rows
-			if (PApplet.trim(rows[i]).length() == 0) {
-				continue;
-			}
-			// skip comment lines
-			if (rows[i].startsWith(comment)) {
-				continue;
-			}
-
-			String[] pieces = PApplet.split(rows[i], separator);
-			if (hasEnclosingQuotationMarks) {
-				removeEnclosingQuotationMarks(pieces);
-			}
-			// Get rid of unnecessary leading and ending spaces
-			pieces = PApplet.trim(pieces);
-			return pieces.length;
-		}
-		return 0;
-	}
-
-	/**
-	 * 
-	 * @param arr
-	 */
-	public void removeEnclosingQuotationMarks(String[] arr) {
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].startsWith(QUOTATION_MARK)
-					&& arr[i].endsWith(QUOTATION_MARK) && arr[i].length() > 1) {
-				// remove starting and ending quotation marks
-				arr[i] = arr[i].substring(1, arr[i].length() - 1);
-			}
+		else{
+			System.err.println("There was an error importing the data.");
 		}
 	}
 
-	/**
-	 * loadFile load a csv File, skip empty and comment lines (beginning with
-	 * "#").
-	 * @param filename Set the filename
-	 * @param separator Set the separator to split csv file
+	/*
+	 * ======================================================================|
+	 * PUBLIC SETTING FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
 	 */
-	public void loadFile(String filename, String separator) {
-		loadFile(filename, separator, DEFAULT_COMMENT, false);
-	}
-
-	/**
-	 * loadFile load a csv File, skip empty and comments lines (beginning with
-	 * "#").
-	 * @param filename Set the filename
-	 */
-	public void loadFile(String filename) {
-		loadFile(filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
-	}
-
-	/**
-	 * getRowCount Return the number of rows.
-	 * @return rowCount
-	 */
-	public int getRowCount() {
-		return rowCount;
-	}
-
-	/**
-	 * getColumnCount Return the number of columns.
-	 * @return columnCount
-	 */
-	public int getColumnCount() {
-		return columnCount;
-	}
-
-	/**
-	 * getColumnIndex Find a column by its name, returns -1 if no column was
-	 * found. You can use this to search for a csv-heading.
-	 * @param name Name of the column
-	 * @return integer
-	 */
-	public int getColumnIndex(String name) {
-		for (int i = 0; i < columnCount; i++) {
-			if (data[0][i].equals(name)) {
-				return i;
-			}
-		}
-		System.err.println("No column named '" + name + "' was found");
-		return -1;
-	}
-
-	/**
-	 * getColumnName Returns the name of a specific column.
-	 * @param column Column number
-	 * @return String
-	 */
-	public String getColumnName(int column) {
-		return getString(0, column);
-	}
-
-	/**
-	 * getString get the String of a specific row and column.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @return String
-	 */
-	public String getString(int rowIndex, int columnIndex) {
-		return data[rowIndex][columnIndex];
-	}
-
-	/**
-	 * getString get the String of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
-	 * @return String
-	 */
-	public String getString(String columnName, int rowIndex) {
-		return getString(rowIndex, getColumnIndex(columnName));
-	}
-
-	/**
-	 * getInt get the integer of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
-	 * @return integer
-	 */
-	public int getInt(String columnName, int rowIndex) {
-		return getInt(rowIndex, getColumnIndex(columnName));
-	}
-
-	/**
-	 * getInt get the integer of a specific row and column.
-	 * @param rowIndex row number
-	 * @param columnIndex column number
-	 * @return integer
-	 */
-	public int getInt(int rowIndex, int columnIndex) {
-		String sElement = getString(rowIndex, columnIndex);
-		int ret = -1;
-		// return -1 when string is empty
-		if(sElement == ""){
-			return ret;
-		}
-		try {
-			ret = Integer.parseInt(sElement);
-		} catch (NumberFormatException e) {
-			System.err.println("Could not parse "
-							+ sElement
-							+ " to int! "
-							+ "Did you try to cast the headline or called setFormat() with a wrong format?");
-		}
-		return ret;
-	}
-
-	/**
-	 * getFloat get the float of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
-	 * @return
-	 */
-	public float getFloat(String columnName, int rowIndex) {
-		return getFloat(rowIndex, getColumnIndex(columnName));
-	}
-
-	/**
-	 * getFloat get the float of a specific row and column.
-	 * @param rowIndex row number
-	 * @param column column number
-	 * @return 
-	 */
-	public float getFloat(int rowIndex, int columnIndex) {
-		String sElement = getString(rowIndex, columnIndex);
-		float ret = -1;
-		try {
-			ret = Float.parseFloat(sElement);
-		} catch (NumberFormatException e) {
-			System.err.println("Could not parse "
-							+ sElement
-							+ " to float! "
-							+ "Did you try to cast the headline or called setFormat() with a wrong format?");
-		}
-		return ret;
-	}
 	
 	/**
-	 * TODO store min i in global var!?
-	 * @param columnIndex
-	 * @return
+	 * Sets the headline of a certain column.
+	 * @param row row number
+	 * @param name new name for the column
 	 */
-	public int minInt(int columnIndex){
-		int iStart = hasHeadline ? 1 : 0;		
-		int min = Integer.MAX_VALUE;
-		int minI = -1;	// index of smallest value
-		int tmp = Integer.MAX_VALUE;
-		for(int i=iStart; i<rowCount; i++){
-			try{
-				tmp = Integer.parseInt(data[i][columnIndex]);
-			}catch(NumberFormatException e){
-				e.printStackTrace();
-				System.err.println("minInt(): Parse error...");
-			}			
-			if(tmp < min){
-				min = tmp;
-				minI = i;
-			}
-		}
-		return min == Integer.MAX_VALUE ? -1 : min;
-	}
-	
-	/**
-	 * TODO store max i in global var!?
-	 * @param columnIndex
-	 * @return
-	 */
-	public int maxInt(int columnIndex){
-		int iStart = hasHeadline ? 1 : 0;		
-		int max = -1;
-		int maxI = -1;	// index of biggest value
-		int tmp = -1;
-		for(int i=iStart; i<rowCount; i++){
-			try{
-				tmp = Integer.parseInt(data[i][columnIndex]);
-			}catch(NumberFormatException e){
-				e.printStackTrace();
-				System.err.println("maxInt(): Parse error...");
-			}			
-			if(tmp > max){
-				max = tmp;
-				maxI = i;
-			}
-		}
-		return max == Integer.MAX_VALUE ? -1 : max;
-	}
-	
-	/**
-	 * TODO store min i in global var!?
-	 * @param columnIndex
-	 * @return
-	 */
-	public float minFloat(int columnIndex){
-		int iStart = hasHeadline ? 1 : 0;		
-		float min = Float.MAX_VALUE;
-		int minI = -1;	// index of smallest value
-		float tmp = Float.MAX_VALUE;
-		for(int i=iStart; i<rowCount; i++){
-			try{
-				tmp = Float.parseFloat(data[i][columnIndex]);
-			}catch(NumberFormatException e){
-				e.printStackTrace();
-				System.err.println("minFloat(): Parse error...");
-			}			
-			if(tmp < min){
-				min = tmp;
-				minI = i;
-			}
-		}
-		return min == Float.MAX_VALUE ? -1f : min;
-	}
-	
-	/**
-	 * TODO store max i in global var!?
-	 * @param columnIndex
-	 * @return
-	 */
-	public float maxFloat(int columnIndex){
-		int iStart = hasHeadline ? 1 : 0;		
-		float max = Float.MAX_VALUE;
-		int maxI = -1;	// index of smallest value
-		float tmp = Float.MAX_VALUE;
-		for(int i=iStart; i<rowCount; i++){
-			try{
-				tmp = Float.parseFloat(data[i][columnIndex]);
-			}catch(NumberFormatException e){
-				e.printStackTrace();
-				System.err.println("minFloat(): Parse error...");
-			}			
-			if(tmp > max){
-				max = tmp;
-				maxI = i;
-			}
-		}
-		return max == Float.MAX_VALUE ? -1f : max;
-	}
-
-	/**
-	 * setColumnName Set a specific column name to a new value.
-	 * @param row Row number
-	 * @param name New name for the column
-	 */
+	/*
 	public void setRowName(int column, String name) {
 		data[0][column] = name;
 	}
-
+	*/
+	
 	/**
-	 * setString set a specific String to a new value.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @param value New column String
+	 * Sets a specific String to a new value.
+	 * @param rowIndex row number
+	 * @param columnIndex column number
+	 * @param value new value
 	 */
+	/*
 	public void setString(int rowIndex, int columnIndex, String value) {
 		data[rowIndex][columnIndex] = value;
 	}
-
+	*/
+	
 	/**
-	 * setString set a specific String to a new value.
-	 * @param columnName Name of the row
-	 * @param row Column number
-	 * @param value New row String
+
+	 * Sets a specific String to a new value.
+	 * @param columnName name of the row
+	 * @param row column number
+	 * @param value new value
 	 */
+	/*
 	public void setString(String columnName, int row, String value) {
 		int columnIndex = getColumnIndex(columnName);
 		data[row][columnIndex] = value;
 	}
-
+	*/
+	
 	/**
-	 * setInt set a specific integer to a new value.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @param value New integer value
+	 * Sets a specific integer to a new value.
+	 * @param rowIndex row number
+	 * @param columnIndex column number
+	 * @param value new integer value
 	 */
+	/*
 	public void setInt(int rowIndex, int columnIndex, int value) {
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
-
+	*/
+	
 	/**
 	 * setInt set a specific integer to a new value.
 	 * @param columnName Name of the row
 	 * @param rowIndex Column number
 	 * @param value New row String
+	 * Sets a specific integer to a new value.
+	 * @param columnName name of the row
+	 * @param rowIndex column number
+	 * @param value new integer value
 	 */
+	/*
 	public void setInt(String columnName, int rowIndex, int value) {
 		int columnIndex = getColumnIndex(columnName);
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
-
+	*/
+	
 	/**
-	 * setFloat set a specific float to a new value.
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
-	 * @param value New row float
+	 * Sets a specific float to a new value.
+	 * @param rowIndex row number
+	 * @param columnIndex column number
+	 * @param value new float value
 	 */
+	/*
 	public void setFloat(int rowIndex, int columnIndex, float value) {
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
-
+	
 	/**
-	 * setFloat set a specific float to a new value.
-	 * @param columnName Name of the column
-	 * @param rowIndex Row number
-	 * @param value New value
+	 * Sets a specific float to a new value.
+	 * @param columnName name of the column
+	 * @param rowIndex row number
+	 * @param value new float vaule
 	 */
+	/*
 	public void setFloat(String columnName, int rowIndex, float value) {
 		int columnIndex = getColumnIndex(columnName);
 		data[rowIndex][columnIndex] = PApplet.str(value);
 	}
-
-	/*
-	public Object get(int rowIndex, int columnIndex) {
-		if (formats.containsKey(rowIndex)) {
-			switch (formats.get(rowIndex)) {
-			case INT:
-				return getInt(rowIndex, columnIndex);
-			case FLOAT:
-				return getFloat(rowIndex, columnIndex);
-			case STRING:
-				return getString(rowIndex, columnIndex);
-			//case BOOLEAN: return getBoolean(rowIndex, columnIndex);
-			//break;
-			}
-		}
-		// if there is no format mapping, return String
-		return getString(rowIndex, columnIndex);
-	}
 	*/
-	
-	/**
-	 * 
-	 * @param b
-	 */
-	public void hasHeadline(boolean b){
-		this.hasHeadline = b;
-	}
-
-	/**
-	 * For auto-parsing, the format for each column can be set
-	 * @param column
-	 * @param format
-	 */
-	/*
-	public void setFormat(int column, ElementFormat format) {
-		formats.put(column, format);
-	}
-	*/
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isComplete() {
-		return isComplete;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public int firstIncompleteLine() {
-		return firstIncompleteLine;
-	}
 }
