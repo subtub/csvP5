@@ -28,6 +28,8 @@ package de.fhpotsdam.io.csv;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.*;
@@ -349,8 +351,11 @@ public class CsvP5 {
 	 */
 	public static void setDebugLevel(Level level){
 		debugLevel = level;
+		LOGGER.log(Level.INFO, "Debug Level set to " + level.getName());
+		initLogLevel();
 	}
 	
+		
 	/*
 	 * ======================================================================|
 	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -362,6 +367,7 @@ public class CsvP5 {
 	 */
 	private void init(PApplet p, String filename, String separator,
 			String comment, boolean hasEnclosingQuotationMarks) {
+		LOGGER.log(Level.FINEST, "Initialising variables");
 		this.p5 = p;
 		this.filename = filename;
 		this.separator = separator;
@@ -378,6 +384,31 @@ public class CsvP5 {
 		LOGGER.log(Level.FINE, "Resetting the debug flags");
 		isComplete = false;
 		firstIncompleteLine = -1;
+	}
+	
+	/**
+	 * Sets the current log level to {@link #debugLevel}.
+	 */
+	private static void initLogLevel(){
+		// Set new level on logger
+		LOGGER.setLevel(debugLevel);
+	    // Handler for console (reuse it if it already exists)
+	    Handler consoleHandler = null;
+	    //see if there is already a console handler
+	    for (Handler handler : LOGGER.getHandlers()) {
+	        if (handler instanceof ConsoleHandler) {
+	            //found the console handler
+	            consoleHandler = handler;
+	            break;
+	        }
+	    }
+	    if (consoleHandler == null) {
+	        //there was no console handler found, create a new one
+	        consoleHandler = new ConsoleHandler();
+	        LOGGER.addHandler(consoleHandler);
+	    }
+	    //set the console handler to fine:
+	    consoleHandler.setLevel(debugLevel);
 	}
 	
 	/**
