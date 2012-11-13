@@ -28,6 +28,7 @@ package de.fhpotsdam.io.csv;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.*;
 
@@ -62,6 +63,9 @@ public class CsvP5 {
 	public int columnCount, rowCount;
 	// the actual csv data [row][column]
 	public String[][] data;
+	// Logger for logging / debugging
+	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
+	private static Level debugLevel = Level.INFO; 
 
 	/*
 	 * ======================================================================|
@@ -82,6 +86,7 @@ public class CsvP5 {
 	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 */
 	public CsvP5(PApplet p, String filename) {
+		LOGGER.log( Level.FINEST, "Constructor called");
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
 	}
 	
@@ -93,6 +98,7 @@ public class CsvP5 {
 	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
 	 */
 	public CsvP5(PApplet p, String filename, String separator) {
+		LOGGER.log(Level.FINEST, "Constructor called");
 		init(p, filename, separator, DEFAULT_COMMENT, false);
 	}
 	
@@ -107,6 +113,7 @@ public class CsvP5 {
 	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
 	 */
 	public CsvP5(PApplet p, String filename, String separator, boolean hasEnclosingQuotationMarks) {
+		LOGGER.log(Level.FINEST, "Constructor called");
 		init(p, filename, separator, DEFAULT_COMMENT,
 				hasEnclosingQuotationMarks);
 	}
@@ -121,6 +128,7 @@ public class CsvP5 {
 	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
 	 */
 	public CsvP5(PApplet p, String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+		LOGGER.log(Level.FINEST, "Constructor called");
 		init(p, filename, separator, comment, hasEnclosingQuotationMarks);
 	}
 	
@@ -134,6 +142,7 @@ public class CsvP5 {
 	 * Resets the processing-flags and starts the actual CSV-processing.
 	 */
 	public void load() {
+		LOGGER.log(Level.FINEST, "Load called");
 		resetFlags();
 		loadFile(filename, separator, comment, hasEnclosingQuotationMarks);
 	}
@@ -143,6 +152,7 @@ public class CsvP5 {
 	 * @param b True, if is has a headline, false otherwise
 	 */
 	public void hasHeadline(boolean b){
+		LOGGER.log(Level.FINEST, "hasHeadline set to " + b);
 		this.hasHeadline = b;
 	}
 
@@ -197,7 +207,7 @@ public class CsvP5 {
 		    	return key;
 		    }
 		}
-		System.err.println("No column named '" + name + "' was found");
+		LOGGER.log(Level.WARNING, "No column named '" + name + "' was found");
 		return -1;
 	}
 
@@ -211,7 +221,7 @@ public class CsvP5 {
 			return headlines.get(column);
 		}
 		else{
-			System.err.println("There is no headline with index " + column 
+			LOGGER.log(Level.WARNING, "There is no headline with index " + column 
 					+ ". Did you call hasHeadline(true) before loading the file?");
 			return "";
 		}
@@ -263,7 +273,7 @@ public class CsvP5 {
 		try {
 			ret = Integer.parseInt(sElement);
 		} catch (NumberFormatException e) {
-			System.err.println("Could not parse "
+			LOGGER.log(Level.WARNING, "Could not parse "
 							+ sElement
 							+ " to int! "
 							+ "Seems like you tried to parse a non-integer data field.");
@@ -293,7 +303,7 @@ public class CsvP5 {
 		try {
 			ret = Float.parseFloat(sElement);
 		} catch (NumberFormatException e) {
-			System.err.println("Could not parse "
+			LOGGER.log(Level.WARNING, "Could not parse "
 							+ sElement
 							+ " to float! "
 							+ "Seems like you tried to parse a non-integer data field.");
@@ -320,6 +330,7 @@ public class CsvP5 {
 	 * @param comment the new comment indicator
 	 */
 	public void setCommentIndicator(String comment){
+		LOGGER.log(Level.FINE, "Comment indicator set to " + comment); 
 		this.comment = comment;
 	}
 	
@@ -329,6 +340,7 @@ public class CsvP5 {
 	 * @param filename
 	 */
 	public void setFilename(String filename){
+		LOGGER.log(Level.FINE, "Filename set to " + filename);
 		this.filename = filename;
 	}
 	/*
@@ -347,6 +359,7 @@ public class CsvP5 {
 		this.separator = separator;
 		this.comment = comment;
 		this.hasEnclosingQuotationMarks = hasEnclosingQuotationMarks;
+		LOGGER.setLevel(debugLevel); 
 	}
 
 	/**
@@ -354,6 +367,7 @@ public class CsvP5 {
 	 * errors while loading/parsing the file
 	 */
 	private void resetFlags() {
+		LOGGER.log(Level.FINE, "Resetting the debug flags");
 		isComplete = false;
 		firstIncompleteLine = -1;
 	}
@@ -384,7 +398,8 @@ public class CsvP5 {
 			pieces = PApplet.trim(pieces);
 			return pieces.length;
 		}
-		return 0; // only comments and blank lines
+		LOGGER.log(Level.WARNING, "Seams like ther are only comment or blank lines!");
+		return 0;
 	}
 
 	/**
@@ -395,6 +410,7 @@ public class CsvP5 {
 	 * @param arr Array of Strings
 	 */
 	private void removeEnclosingQuotationMarks(String[] arr) {
+		LOGGER.log(Level.FINE, "Removing enclosing quotation marks");
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i].startsWith(QUOTATION_MARK)
 					&& arr[i].endsWith(QUOTATION_MARK) && arr[i].length() > 1) {
@@ -414,17 +430,17 @@ public class CsvP5 {
 	 * surrounded by quotation marks 
 	 */
 	private void loadFile(String filename, String separator, String comment, boolean hasEnclosingQuotationMarks) {
+		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
+				+ separator + ", comment: " + comment + ", hasEnclosingQuotationMarks: " + hasEnclosingQuotationMarks
+				+ "hasHeadline: " + hasHeadline);
 		if(hasHeadline){
 			headlines = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
-		if (true) {
-			System.out.println("### Load File: " + filename);
-			System.out.println(rows);
-		}
 
 		data = new String[rows.length][];
 		int nFirstLineElements = getNumberOfElements(rows);
+		LOGGER.log(Level.FINEST, "number of elements in first line " + nFirstLineElements);
 
 		for (int i = 0; i < rows.length; i++) {
 			isComplete = true;
@@ -445,6 +461,8 @@ public class CsvP5 {
 			data[rowCount] = PApplet.trim(pieces);
 			// check if the number of elements is the same as in the first line
 			if (data[rowCount].length != nFirstLineElements) {
+				LOGGER.log(Level.WARNING, "Found an incomplete line in the CSV! Row: " + rowCount 
+						+ ". Number of elements in first row and this row do not match!");
 				// set flag if not
 				isComplete = false;
 				if (firstIncompleteLine != -1) {
@@ -471,7 +489,8 @@ public class CsvP5 {
 			columnCount = data[0].length;
 		}
 		else{
-			System.err.println("There was an error importing the data.");
+			LOGGER.log(Level.WARNING, "There was an error importing the data. You can try to: " +
+					"Set the separator and make sure that the line endings are okay");
 		}
 	}
 
