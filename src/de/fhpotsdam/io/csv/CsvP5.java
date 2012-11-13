@@ -67,7 +67,8 @@ public class CsvP5 {
 	public String[][] data;
 	// Logger for logging / debugging
 	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
-	private static Level debugLevel = Level.INFO; 
+	private final static Level DEFAULT_DEBUG_LEVEL = Level.INFO;  
+	private static Level debugLevel;
 
 	/*
 	 * ======================================================================|
@@ -85,7 +86,6 @@ public class CsvP5 {
 	 * Constructor with least arguments, use this if your csv-file  
 	 * uses commas as separator and '#' for comments.
 	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 */
 	public CsvP5(PApplet p) {
 		LOGGER.log( Level.FINEST, "Constructor called");
@@ -340,6 +340,22 @@ public class CsvP5 {
 		return ret;
 	}
 	
+	/**
+	 * Returns the current separator char/string.
+	 * @return the separator
+	 */
+	public String getSeparator(){
+		return separator;
+	}
+	
+	/**
+	 * Returns the current char/string used to begin a comment
+	 * @return the comment string
+	 */
+	public String getCommentIndicator(){
+		return comment;
+	}
+	
 	/*
 	 * ======================================================================|
 	 * PUBLIC SETTERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -400,7 +416,8 @@ public class CsvP5 {
 		this.separator = separator;
 		this.comment = comment;
 		this.hasEnclosingQuotationMarks = hasEnclosingQuotationMarks;
-		LOGGER.setLevel(debugLevel); 
+		debugLevel = DEFAULT_DEBUG_LEVEL;
+		initLogLevel();
 	}
 
 	/**
