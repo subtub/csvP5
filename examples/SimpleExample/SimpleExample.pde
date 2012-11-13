@@ -10,8 +10,8 @@ CsvP5 csv;
 void setup() {
   size(500, 800);
   
-  csv = new CsvP5(this);
-  csv.loadFile("sample.csv");
+  csv = new CsvP5(this, "sample.csv");
+  csv.load();
   println("csv total columns = " + csv.getColumnCount());
   println("csv total rows = " + csv.getRowCount());
   
