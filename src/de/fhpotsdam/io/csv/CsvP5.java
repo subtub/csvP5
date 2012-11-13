@@ -35,9 +35,9 @@ import processing.core.*;
  * CsvP5
  * 
  * based on Ben Fry's Visualizing Data Book
- * @author ##author.name##
- * @modified ##date##
- * @version ##library.version##
+ * @author Paul Vollmer, Tim Pulver
+ * @modified 2012-11-13
+ * @version 0.1
  * @example SimpleExample.pde
  */
 public class CsvP5 {
