@@ -80,6 +80,17 @@ public class CsvP5 {
 	 */
 	@SuppressWarnings("unused")
 	private CsvP5(){}
+	
+	/**
+	 * Constructor with least arguments, use this if your csv-file  
+	 * uses commas as separator and '#' for comments.
+	 * @param p Use "this" from within your Processing main sketch
+	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
+	 */
+	public CsvP5(PApplet p) {
+		LOGGER.log( Level.FINEST, "Constructor called");
+		init(p, "", DEFAULT_SEPARATOR, DEFAULT_COMMENT, false);
+	}
 
 	/**
 	 * Constructor with least arguments, use this if your csv-file  
@@ -143,8 +154,24 @@ public class CsvP5 {
 	/**
 	 * Resets the processing-flags and starts the actual CSV-processing.
 	 */
+	public void load(String filename) {
+		this.filename = filename;
+		if(filename.equals("")){
+			LOGGER.log(Level.WARNING, "Could not load file '" + filename + "' - filename is empty!");
+			return;
+		}
+		load();
+	}
+	
+	/**
+	 * Resets the processing-flags and starts the actual CSV-processing.
+	 */
 	public void load() {
 		LOGGER.log(Level.FINEST, "Load called");
+		if(filename.equals("")){
+			LOGGER.log(Level.WARNING, "No filename has been set! Make sure to call setFilename() before!");
+			return;
+		}
 		resetFlags();
 		loadFile(filename, separator, comment, hasEnclosingQuotationMarks);
 	}
