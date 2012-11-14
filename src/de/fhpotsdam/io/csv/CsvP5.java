@@ -54,7 +54,7 @@ public class CsvP5 {
 	private String separator; // default separator is ','
 	private String comment; // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasHeadline = true; // if the document has a headline
+	private boolean hasHeadline = false; // if the document has a headline
 	private HashMap<Integer, String> headlines; // stores the headlines (column index, headline name)
 
 	// flags - will be set while processing
