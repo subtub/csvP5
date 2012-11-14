@@ -12,7 +12,7 @@ CsvP5 csv;
 
 
 void setup() {
-  size(600, 600);
+  size(500, 500);
   
   csv = new CsvP5(this, "sample.csv");
   csv.load();
@@ -30,7 +30,7 @@ void draw() {
   for(int col=0; col<csv.getColumnCount(); col++) {
     for(int row=0; row<csv.getRowCount(); row++) {
       fill(0);
-      text(csv.getString(row, col)+" ("++"%)", 50+(col*75), 50+(row*20));
+      text(csv.getString(row, col)+" ("+"%)", 50+(col*75), 50+(row*20));
     }
   }
   
@@ -39,12 +39,12 @@ void draw() {
   fill(70, 140, 210);
   text("sum", 15, 200);
   for(int col=0; col<csv.getRowCount(); col++) {
-    int sum = int(csv.math.getSum(csv.data, col)); 
-    text(sum, 50+(col*75), 200);
+    //int sum = int(csv.math.getSum(csv.data[0], 0, col)); 
+    //text(sum, 50+(col*75), 200);
   }
   text("sum", 440, 30);
   for(int row=0; row<csv.getColumnCount(); row++) {
-    int sum = int(csv.math.getSum(csv.data[row], 0, csv.getColumnCount()));
+    float sum = csv.math.getSum(csv.data, row, 0, csv.getColumnCount());
     text(sum, 440, 50+(row*20));
   }
   
