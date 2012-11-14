@@ -25,7 +25,7 @@
 
 package de.fhpotsdam.io.csv;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -44,10 +44,10 @@ import processing.core.*;
  * @example SimpleExample.pde
  */
 public class CsvP5 {
-	public static final String DEFAULT_SEPARATOR = ",";
-	public static final String DEFAULT_COMMENT = "#";
-	public static final String QUOTATION_MARK = "\"";
-	public static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
+	private static final String DEFAULT_SEPARATOR = ",";
+	private static final String DEFAULT_COMMENT = "#";
+	private static final String QUOTATION_MARK = "\"";
+	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
 	PApplet p5; // processing reference for text loading and other stuff
 	private String filename; // filename to load
@@ -60,12 +60,16 @@ public class CsvP5 {
 	// flags - will be set while processing
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
-
-	// contains number of rows/columns after loading a file
+	
+	// Contains total number of rows/columns after loading a file.
 	// rowCounts will not contain headline if hasHeadline(true) has been called
-	public int columnCount, rowCount;
-	// the actual csv data [row][column]
+	private int rowCount, columnCount;
+	
+	/**
+	 * The actual csv stored in an data array [row][column].
+	 */
 	public String[][] data;
+	
 	// Logger for logging / debugging
 	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
 	private final static Level DEFAULT_DEBUG_LEVEL = Level.INFO;  
@@ -154,6 +158,7 @@ public class CsvP5 {
 
 	/**
 	 * Resets the processing-flags and starts the actual CSV-processing.
+	 * @param filename The csv filepath.
 	 */
 	public void load(String filename) {
 		this.filename = filename;
