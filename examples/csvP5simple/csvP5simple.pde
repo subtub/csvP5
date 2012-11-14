@@ -25,8 +25,8 @@ void setup() {
 void draw() {
   background(255);
   
-  for(int row=0; row<csv.getRowCount(); row++) {
-    for(int col=0; col<csv.getColumnCount(); col++) {
+  for(int col=0; col<csv.getColumnCount(); col++) {
+    for(int row=0; row<csv.getRowCount(); row++) {
       int xPos = 50+(col*101);
       int yPos = 50+(row*101);
       int width = 100;
