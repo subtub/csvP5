@@ -10,10 +10,11 @@ CsvP5 csv;
 
 
 void setup() {
-  size(600, 600);
+  size(500, 500);
   
   csv = new CsvP5(this, "sample.csv");
   csv.load();
+  csv.hasHeadline(false);
   println("csv total columns   =   " + csv.getColumnCount());
   println("csv total rows      =   " + csv.getRowCount());
   
@@ -27,22 +28,22 @@ void draw() {
   
   for(int col=0; col<csv.getColumnCount(); col++) {
     for(int row=0; row<csv.getRowCount(); row++) {
-      int xPos = 50+(col*101);
-      int yPos = 50+(row*101);
-      int width = 100;
-      int height = 100;
+      int xPos = 25+(col*46);
+      int yPos = 25+(row*46);
+      int w = 45;
+      int h = 45;
       
       fill(230);
       noStroke();
-      rect(xPos, yPos, width, height);
+      rect(xPos, yPos, w, h);
       
-      fill(70, 140, 210);
+      fill(180, 200, 230);
       noStroke();
-      float mappedValue = map(csv.getInt(row, col), 0,width, 0, 90);
-      rect(xPos, yPos+(height-mappedValue), width, mappedValue);
+      float mappedValue = map(csv.getInt(row, col), 0,100, 0,w);
+      rect(xPos, yPos+(h-mappedValue), w, mappedValue);
       
-      fill(255);
-      text(csv.getString(row, col), xPos+5, yPos+90);
+      fill(0);
+      text(csv.getString(row, col), xPos+4, yPos+14);
     }
   }
 }
