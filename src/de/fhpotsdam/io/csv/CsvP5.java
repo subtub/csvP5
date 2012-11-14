@@ -38,10 +38,8 @@ import processing.core.*;
  * CsvP5
  * 
  * based on Ben Fry's Visualizing Data Book
- * @author Paul Vollmer, Tim Pulver
- * @modified 2012-11-13
- * @version 0.1
- * @example SimpleExample.pde
+ * @author ##author.name##
+ * @example csvP5simple
  */
 public class CsvP5 {
 	private static final String DEFAULT_SEPARATOR = ",";
@@ -137,13 +135,13 @@ public class CsvP5 {
 	}
 	/**
 	 * Constructor with additional separator, comment character and quotation-mark arguments, use this if your csv-file 
-	 * <b>not</b> uses commas as separatorsand <b>not</> uses '#' as comment indicators. 
+	 * <b>not</b> uses commas as separators and <b>not</b> uses '#' as comment indicators. 
 	 * @param p Use "this" from within your Processing main sketch
 	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
 	 * @param comment The character/string which is used to introduce comments
 	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
-	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
+	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here.
 	 */
 	public CsvP5(PApplet p, String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINEST, "Constructor called");
