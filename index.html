@@ -42,7 +42,7 @@
 			<h2>csvP5</h2>
 			<p>
 			A library by <a href="http://www.fh-potsdam.de">Tim Pulver, Paul Vollmer</a> for the <a href="http://www.processing.org" target="_blank">Processing</a> programming environment.<br>
-			Last update, 11/12/2012.
+			Last update, 11/14/2012.
 			</p>
 			<p>
 			Reading CSV(Character Separated Values) Files<br>
@@ -58,7 +58,8 @@
 			<h2>Download</h2>
 			<p>
 			Download csvP5 version 0.1.1 (1) in 
-			<a href="./download/csvP5-1.zip">.zip format</a>.
+			<!-- <a href="./download/csvP5-1.zip">.zip format</a>. -->
+			<a href="https://github.com/downloads/WrongEntertainment/csvP5/csvP5.zip">.zip format</a>.
 			</p>
 			<h2>Installation</h2>
 			<p>
@@ -77,10 +78,75 @@
 			<div id="examples" class="clear">
 			<h2>Examples</h2>
 			<p>Find a list of examples in the current distribution of csvP5, or have a look at them by following the links below.</p>
-			<ul>
-			<li><a href="examples/SimpleExample/SimpleExample.pde">SimpleExample</a></li> 
-			</ul>
+			<p><ul>
+			<li><a href="examples/SimpleExample/SimpleExample.pde">SimpleExample</a></li> <li><a href="examples/SimpleExampleWithHeadline/SimpleExampleWithHeadline.pde">SimpleExampleWithHeadline</a></li> 
+			</ul></p>
+			<h2>Using different csv table types</h2>
+			<div class="tableSample">
+				Different Table Examples:<br><br>
+				Content of all rows/cols has the same data type (integer, float, string, boolean)<br><br>
+				<table width="100%" style="background: #ccc;">
+			  		<tr><td>VAL 11</td><td>VAL 12</td><td>VAL 13</td><td>VAL 14</td><td>VAL 15</td></tr>
+			  		<tr><td>VAL 21</td><td>VAL 22</td><td>VAL 23</td><td>VAL 24</td><td>VAL 25</td></tr>
+					<tr><td>VAL 31</td><td>VAL 32</td><td>VAL 33</td><td>VAL 34</td><td>VAL 35</td></tr>
+					<tr><td>VAL 41</td><td>VAL 42</td><td>VAL 43</td><td>VAL 44</td><td>VAL 45</td></tr>
+					<tr><td>VAL 51</td><td>VAL 52</td><td>VAL 53</td><td>VAL 54</td><td>VAL 55</td></tr>
+				</table>
+				<br>
+				Content of the rows has the same datatype<br><br>
+				<table width="100%">
+			  		<tr style="background: #ccc;"><td>VAL 11</td><td>VAL 12</td><td>VAL 13</td><td>VAL 14</td><td>VAL 15</td></tr>
+			  		<tr><td>VAL 21.0</td><td>VAL 22.0</td><td>VAL 23.0</td><td>VAL 24.0</td><td>VAL 25.0</td></tr>
+					<tr style="background: #ccc;"><td>VAL 31</td><td>VAL 32</td><td>VAL 33</td><td>VAL 34</td><td>VAL 35</td></tr>
+					<tr><td>VAL 41.0</td><td>VAL 42.0</td><td>VAL 43.0</td><td>VAL 44.0</td><td>VAL 45.0</td></tr>
+					<tr style="background: #ccc;"><td>VAL 51</td><td>VAL 52</td><td>VAL 53</td><td>VAL 54</td><td>VAL 55</td></tr>
+				</table>
+				<br>
+				
+				Content float<br><br>
+				<table width="100%">
+			  		<tr><td style="background: #ccc;">VAL 11</td><td>VAL 12.0</td><td style="background: #ccc;">VAL 13</td><td>VAL 14.0</td><td style="background: #ccc;">VAL 15</td></tr>
+			  		<tr><td style="background: #ccc;">VAL 21</td><td>VAL 22.0</td><td style="background: #ccc;">VAL 23</td><td>VAL 24.0</td><td style="background: #ccc;">VAL 25</td></tr>
+					<tr><td style="background: #ccc;">VAL 31</td><td>VAL 32.0</td><td style="background: #ccc;">VAL 33</td><td>VAL 34.0</td><td style="background: #ccc;">VAL 35</td></tr>
+					<tr><td style="background: #ccc;">VAL 41</td><td>VAL 42.0</td><td style="background: #ccc;">VAL 43</td><td>VAL 44.0</td><td style="background: #ccc;">VAL 45</td></tr>
+					<tr><td style="background: #ccc;">VAL 51</td><td>VAL 52.0</td><td style="background: #ccc;">VAL 53</td><td>VAL 54.0</td><td style="background: #ccc;">VAL 55</td></tr>
+				</table>
+				<br>
+				
+				Table with row head<br><br>
+				<table width="100%">
+					<tr style="background: #ccc;"><th>HEAD 1</th><th>HEAD 2</th><th>HEAD 3</th><th>HEAD 4</th><th>HEAD 5</th></tr>
+			  		<tr><td>VAL 11</td><td>VAL 12</td><td>VAL 13</td><td>VAL 14</td><td>VAL 15</td></tr>
+			  		<tr><td>VAL 21</td><td>VAL 22</td><td>VAL 23</td><td>VAL 24</td><td>VAL 25</td></tr>
+					<tr><td>VAL 31</td><td>VAL 32</td><td>VAL 33</td><td>VAL 34</td><td>VAL 35</td></tr>
+					<tr><td>VAL 41</td><td>VAL 42</td><td>VAL 43</td><td>VAL 44</td><td>VAL 45</td></tr>
+					<tr><td>VAL 51</td><td>VAL 52</td><td>VAL 53</td><td>VAL 54</td><td>VAL 55</td></tr>
+				</table>
+				<br>
+				
+				Table with col head<br><br>
+				<table width="100%">
+			  		<tr><th style="background: #ccc;">HEAD 1</th><td>VAL 11</td><td>VAL 12</td><td>VAL 13</td><td>VAL 14</td><td>VAL 15</td></tr>
+			  		<tr><th style="background: #ccc;">HEAD 2</th><td>VAL 21</td><td>VAL 22</td><td>VAL 23</td><td>VAL 24</td><td>VAL 25</td></tr>
+					<tr><th style="background: #ccc;">HEAD 3</th><td>VAL 31</td><td>VAL 32</td><td>VAL 33</td><td>VAL 34</td><td>VAL 35</td></tr>
+					<tr><th style="background: #ccc;">HEAD 4</th><td>VAL 41</td><td>VAL 42</td><td>VAL 43</td><td>VAL 44</td><td>VAL 45</td></tr>
+					<tr><th style="background: #ccc;">HEAD 5</th><td>VAL 51</td><td>VAL 52</td><td>VAL 53</td><td>VAL 54</td><td>VAL 55</td></tr>
+				</table>
+				<br>
+				
+				Table with row/col head<br><br>
+				<table width="100%">
+			  		<tr style="background: #ccc;"><th> </th><th>HEAD 1</th><th>HEAD 2</th><th>HEAD 3</th><th>HEAD 4</th><th>HEAD 5</th></tr>
+			  		<tr><th style="background: #ccc;">HEAD 1</th><td>VAL 11</td><td>VAL 12</td><td>VAL 13</td><td>VAL 14</td><td>VAL 15</td></tr>
+					<tr><th style="background: #ccc;">HEAD 2</th><td>VAL 21</td><td>VAL 22</td><td>VAL 23</td><td>VAL 24</td><td>VAL 25</td></tr>
+					<tr><th style="background: #ccc;">HEAD 3</th><td>VAL 31</td><td>VAL 32</td><td>VAL 33</td><td>VAL 34</td><td>VAL 35</td></tr>
+					<tr><th style="background: #ccc;">HEAD 4</th><td>VAL 41</td><td>VAL 42</td><td>VAL 43</td><td>VAL 44</td><td>VAL 45</td></tr>
+					<tr><th style="background: #ccc;">HEAD 5</th><td>VAL 51</td><td>VAL 52</td><td>VAL 53</td><td>VAL 54</td><td>VAL 55</td></tr>
+				</table>
+				<br>
 			</div>
+			</div>
+			
 			
 			
 			<div id="info">
