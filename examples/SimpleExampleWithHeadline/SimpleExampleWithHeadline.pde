@@ -1,5 +1,5 @@
 /**
- * Simple csvP5 example with headline
+ * csvP5 SimpleExampleWithHeadline
  *
  * csvP5 http://www.github.com/wrongentertainment/csvP5
  */
@@ -24,12 +24,14 @@ void setup() {
 
 
 void draw() {
-  background(0);
-  fill(255);
+  background(255);
+  
+  fill(0);
   for(int i=0; i<csv.getColumnCount(); i++) {
-    text(csv.getHeadlineName(i), 40+(i*110), 40);
+    int xPos = 40+(i*110);
+    text(csv.getHeadlineName(i), xPos, 40);
     for(int j=0; j<csv.getRowCount(); j++) {
-      text(csv.getString(j, i), 40+(i*110), 70+(j*15));
+      text(csv.getString(j, i), xPos, 70+(j*15));
     }
   }
 }
