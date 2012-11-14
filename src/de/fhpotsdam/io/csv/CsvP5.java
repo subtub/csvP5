@@ -34,6 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.*;
 
+import de.fhpotsdam.util.math.Math;
+
 /**
  * CsvP5
  * 
@@ -68,6 +70,7 @@ public class CsvP5 {
 	 */
 	public String[][] data;
 	
+	public Math math;
 	// Logger for logging / debugging
 	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
 	private final static Level DEFAULT_DEBUG_LEVEL = Level.INFO;  
