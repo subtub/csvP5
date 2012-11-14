@@ -23,7 +23,7 @@ public class Math {
 	 * @param values
 	 * @return
 	 */
-	public static float getMax(String[] values){
+	public static float getSum(String[] values){
 		return getSum(values, 0, values.length);
 	}
 	
