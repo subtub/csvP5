@@ -10,7 +10,7 @@ CsvP5 csv;
 
 
 void setup() {
-  size(700, 300);
+  size(500, 500);
   
   csv = new CsvP5(this, "someCsv.csv");
   csv.hasHeadline(true);
@@ -26,7 +26,7 @@ void draw() {
   
   fill(0);
   for(int col=0; col<csv.getColumnCount(); col++) {
-    int xPos = 40+(col*110);
+    int xPos = 25+(col*80);
     text(csv.getHeadlineName(col), xPos, 40);
     for(int row=0; row<csv.getRowCount(); row++) {
       text(csv.getString(row, col), xPos, 70+(row*15));
