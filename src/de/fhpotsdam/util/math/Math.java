@@ -76,7 +76,7 @@ public class Math {
 	
 	/**
 	 * Parses the row with index rowIndex to float and sums up all values. 
-	 * @param values the two-dimnensional string array containing floats at [][columnIndex]
+	 * @param values the two-dimensional string array containing floats at [][columnIndex]
 	 * @param columnIndex the column index containing floats to sum up
 	 * @param startIndex row start index
 	 * @param endIndex row end index
@@ -102,7 +102,7 @@ public class Math {
 	
 	/**
 	 * Parses the row with index rowIndex to float and sums up all values. 
-	 * @param values the two-dimnensional string array containing floats at [][columnIndex]
+	 * @param values the two-dimensional string array containing floats at [][columnIndex]
 	 * @param columnIndex the column index containing floats to sum up
 	 * @return the sum of all values in the specific column
 	 */
