@@ -61,7 +61,7 @@ public class Math {
 	 */
 	public static float getSum(String[] values, int startIndex, int endIndex){
 		float sum = 0;
-		if(startIndex<0 || endIndex > values.length || startIndex > endIndex ){
+		if(startIndex<0 || endIndex > values.length || startIndex >= endIndex ){
 			throw new IllegalArgumentException("Start index needs to be smaller than end index and withing range of the array!");
 		}
 		for(int i=startIndex; i<endIndex; i++){
@@ -87,7 +87,7 @@ public class Math {
 		if(values == null || values.length == 0){
 			throw new IllegalArgumentException("Values array is null or does not contain any data");
 		}
-		else if(startIndex<0 || endIndex > values[0].length || startIndex > endIndex ){
+		else if(startIndex<0 || endIndex > values[0].length || startIndex >= endIndex ){
 			throw new IllegalArgumentException("Start index needs to be smaller than end index and withing range of the array!");
 		}
 		for(int i=startIndex; i<endIndex; i++){
