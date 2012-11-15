@@ -64,6 +64,8 @@ public class CsvP5 {
 	// Contains total number of rows/columns after loading a file.
 	// rowCounts will not contain headline if hasHeadline(true) has been called
 	private int rowCount, columnCount;
+	// Writer object - use for all modifications / writing
+	public CsvP5Writer writer;
 	
 	/**
 	 * The actual csv stored in an data array [row][column].
