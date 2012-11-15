@@ -23,7 +23,7 @@
 //
 //	@Test
 //	public void testGetPossibleDataTypes(){
-//		String s1 = "False";
+//		String s1 = "34.42";
 //		StructureAnalyzer a = new StructureAnalyzer();
 //		ArrayList<DataType> al = a.getPossibleDataTypes(s1);
 //		for(DataType dt: al){
