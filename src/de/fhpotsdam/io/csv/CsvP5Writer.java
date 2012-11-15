@@ -34,9 +34,10 @@ public class CsvP5Writer {
 	private String filename;
 	private int floatPrecision = FLOAT_PRECISION_DEFAULT;
 	private boolean roundFloatValues = ROUND_FLOAT_VALUES_DEFAULT;
+	private CsvP5 csv;
 	
-	public CsvP5Writer(PApplet p, String filename){
-		this.filename = filename;
+	public CsvP5Writer(CsvP5 csvBase){
+		this.csv = csv;
 		init();
 	}
 	
