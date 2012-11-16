@@ -24,11 +24,15 @@
 //	@Test
 //	public void testGetPossibleDataTypes(){
 //		String s1 = "34.42";
-//		StructureAnalyzer a = new StructureAnalyzer();
+//		String[] sArr = {"true", "false", "true", "false", "true", "true"};
+//		StructureAnalyzer analyzer = new StructureAnalyzer();
+//		/*
 //		ArrayList<DataType> al = a.getPossibleDataTypes(s1);
 //		for(DataType dt: al){
 //			println(dt.toString());
-//		}
+//		}*/
+//		DataType type = analyzer.getRecommendedType(sArr);
+//		println("Recommended type for '" + sArr.toString() + "': " + type.toString());
 //		
 //	}
 //}
