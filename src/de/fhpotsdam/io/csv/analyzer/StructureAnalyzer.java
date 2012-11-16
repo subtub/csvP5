@@ -80,7 +80,9 @@ public class StructureAnalyzer {
 	/**
 	 * TODO: 
 	 * - currently picks a data type and ignores string.... needs tuning
-	 * - check if there is ANY string with a comma -> don't use int, but float instead 
+	 * - check if there is ANY string with a comma -> don't use int, but float instead
+	 * - always choose string if only one entry can be parsed to another format
+	 * - throw an error info message -> logger - as an info, that there might be a table~bug e.g. "1, !?!.. 
 	 * 
 	 * Sorts a HashMap containing <DataType, Integer> pairs (e.g. "INT", 2) by value 
 	 * and returns the DataType with biggest integer. 
