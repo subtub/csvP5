@@ -53,7 +53,7 @@ public class CsvP5 {
 	private String comment;                        // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
 	private boolean hasRowHeaders = false;          // if the document has horizontal headers
-	private boolean hasColumnHeader = false;       // if the document has vertical headers
+	private boolean hasColumnHeaders = false;       // if the document has vertical headers
 	private HashMap<Integer, String> columnHeaders;    // stores the headlines (column index, headline name)
 
 	// flags - will be set while processing
@@ -121,8 +121,17 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Has to be called if your CSV-file has a headline. Default is no headline (false). 
-	 * @param b True, if is has a headline, false otherwise
+	 * Has to be called if the first row of your CSV-file (on top) contains headers. Default is no column headers (false). 
+	 * @param b True, if is has column headers, false otherwise
+	 */
+	public void hasColumnHeaders(boolean b){
+		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
+		this.hasColumnHeaders = b;
+	}
+	
+	/**
+	 * Has to be called if the first <b>column</b> of your CSV-file (left) contains headers. Default is no row headers (false). 
+	 * @param b True, if is has row headers, false otherwise
 	 */
 	public void hasRowHeaders(boolean b){
 		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
@@ -130,27 +139,33 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Returns true, if there were no problems parsing the file. 
-	 * @return
+	 * This is an indicator if loading the CSV-file went smooth. 
+	 * If it happened, that the number of the separator char/string  
+	 * in every row differs, this will return false. There is no check for  
+	 * holes, so parsing a row like "data,,data,data" will be fine and 
+	 * just contain a blank element.
+	 * @return true, if there were no problems parsing the file. 
 	 */
 	public boolean isComplete() {
 		return isComplete;
 	}
 
 	/**
-	 * If {@link #isComplete()} returns true, which means, there were errors 
-	 * parsing the CSV-file, this will return the first line with parsing-errors. 
-	 * @return The first problematic line.
+	 * If {@link #isComplete()} returns false, which means, there were errors 
+	 * parsing the CSV-file, this returns the row index of the CSV-file, which can be useful if 
+	 * you search for "bad spots" in the CSV-file and need to fix them manually.    
+	 * @return The index of the first problematic row, note that index begins at 0, 
+	 * line numbers of most text editors start at 1.
 	 */
-	public int getFirstIncompleteLine() {
+	public int getFirstIncompleteRowIndex() {
 		return firstIncompleteLine;
 	}
 	
 	/**
-	 * Returns the number of rows. If the document has headlines and 
-	 * hasHeadlines(true) has been called before CSV-import, this will <b>not</b> 
-	 * contain the headline.
-	 * @return rowCount Number of rows (without headline)
+	 * Returns the number of rows. If the document contains row headers and  
+	 * {@link #hasRowHeaders(boolean)} has been called with <i>true</i> before CSV-import, this will <b>not</b> 
+	 * contain the header row.
+	 * @return rowCount number of rows (without header row)
 	 */
 	public int getTotalRows() {
 		return totalRows;
@@ -199,6 +214,12 @@ public class CsvP5 {
 			return "";
 		}
 	}
+	
+	/*
+	 * ======================================================================|
+	 * PUBLIC ELEMENT GETTERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
+	 */
 
 	/**
 	 * Returns the String of a specific row and column (untouched from the CSV-file).
