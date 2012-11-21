@@ -499,8 +499,8 @@ public class CsvP5 {
 		int nFirstLineElements = getNumberOfElements(rows);
 		LOGGER.log(Level.FINEST, "number of elements in first line " + nFirstLineElements);
 
+		isComplete = true;
 		for (int i = 0; i < rows.length; i++) {
-			isComplete = true;
 			// skip empty rows
 			if (PApplet.trim(rows[i]).length() == 0) {
 				continue;
