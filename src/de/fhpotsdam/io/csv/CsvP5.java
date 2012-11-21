@@ -85,9 +85,7 @@ public class CsvP5 {
 	 * ======================================================================|
 	 */
 	
-	/**
-	 * Forbidden, use the other constructor instead
-	 */
+	// Forbidden, use the other constructor instead
 	@SuppressWarnings("unused")
 	private CsvP5(){}
 
@@ -102,47 +100,6 @@ public class CsvP5 {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
 	
-	/**
-	 * Constructor with additional separator argument, use this if your csv-file 
-	 * <b>not</b> uses commas as separators.
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
-	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 */
-	public CsvP5(PApplet p, String filename, String separator) {
-		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
-	}
-	
-	/**
-	 * Constructor with additional separator and quotation-mark arguments, use this if your csv-file 
-	 * <b>not</b> uses commas as separators and has encolsing quotation marks 
-	 * e.g. "data1";"data2",... 
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
-	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
-	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
-	 */
-	public CsvP5(PApplet p, String filename, String separator, boolean removeEnclosingQuotationMarks) {
-		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, DEFAULT_COMMENT,
-				removeEnclosingQuotationMarks);
-	}
-	/**
-	 * Constructor with additional separator, comment character and quotation-mark arguments, use this if your csv-file 
-	 * <b>not</b> uses commas as separators and <b>not</b> uses '#' as comment indicators. 
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
-	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 * @param comment The character/string which is used to introduce comments
-	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
-	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here.
-	 */
-	public CsvP5(PApplet p, String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
-		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, comment, removeEnclosingQuotationMarks);
-	}
 	
 	/*
 	 * ======================================================================|
@@ -389,12 +346,12 @@ public class CsvP5 {
 		
 	/*
 	 * ======================================================================|
-	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
 	
 	/**
-	 * Get's called by every constructor to store / initiate the class variables. 
+	 * Get's called by the constructor to store / initiate the class variables. 
 	 */
 	private void init(PApplet p, String filename, String separator,
 			String comment, boolean hasEnclosingQuotationMarks) {
@@ -444,9 +401,10 @@ public class CsvP5 {
 	}
 	
 	/**
-	 * Returns the number of elements in the first non-comment line
-	 * 
-	 * @param rows The CSV-data
+	 * Helper function, returns the number of elements in the first 
+	 * non-comment line, will be used to see of the number of elements 
+	 * from every row match each other (if the CSV file is complete).	 * 
+	 * @param rows The raw CSV-data
 	 * @return Number of elements
 	 */
 	private int getNumberOfElements(String[] rows) {
@@ -474,10 +432,10 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Checks if the elemnets start and end with quotation marks (e.g. "data" -> data) 
-	 * and deltes them if found.  
-	 * This will only delete the <b>first</b> and </last> quotation mark. 
-	 * If there are more, they will be left untouched.
+	 * Checks if the elements start and end with quotation marks (e.g. "data" -> data) 
+	 * and deletes them if found.  
+	 * This will only delete the <b>first</b> and <b>last</b> quotation mark,  
+	 * if there are more, they will be left untouched.
 	 * @param arr Array of Strings
 	 */
 	private void removeEnclosingQuotationMarks(String[] arr) {
