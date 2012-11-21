@@ -52,7 +52,7 @@ public class CsvP5 {
 	private String separator;                      // default separator is ','
 	private String comment;                        // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasRowHeader = false;          // if the document has horizontal headers
+	private boolean hasRowHeaders = false;          // if the document has horizontal headers
 	private boolean hasColumnHeader = false;       // if the document has vertical headers
 	private HashMap<Integer, String> columnHeaders;    // stores the headlines (column index, headline name)
 
@@ -63,7 +63,7 @@ public class CsvP5 {
 	// Contains total number of rows/columns after loading a file.
 	// rowCounts will not contain headline if hasHeadline(true) has been called, 
 	// will not contain skipped lines e.g. when you called startAtRow(...) before and empty lines. 
-	private int rowCount, columnCount;
+	private int totalRows, totalColumns;
 	// Writer object - use for all modifications / writing
 	public CsvP5Writer writer;
 	
@@ -90,8 +90,7 @@ public class CsvP5 {
 	private CsvP5(){}
 
 	/**
-	 * Constructor with least arguments, use this if your csv-file  
-	 * uses commas as separator and '#' for comments.
+	 * Constructor for CsvP5.
 	 * @param p Use "this" from within your Processing main sketch
 	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 */
@@ -125,9 +124,9 @@ public class CsvP5 {
 	 * Has to be called if your CSV-file has a headline. Default is no headline (false). 
 	 * @param b True, if is has a headline, false otherwise
 	 */
-	public void hasHeadline(boolean b){
-		LOGGER.log(Level.FINEST, "hasHeadline set to " + b);
-		this.hasRowHeader = b;
+	public void hasRowHeaders(boolean b){
+		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
+		this.hasRowHeaders = b;
 	}
 
 	/**
@@ -154,7 +153,7 @@ public class CsvP5 {
 	 * @return rowCount Number of rows (without headline)
 	 */
 	public int getTotalRows() {
-		return rowCount;
+		return totalRows;
 	}
 
 	/**
@@ -162,7 +161,7 @@ public class CsvP5 {
 	 * @return columnCount Number of columns
 	 */
 	public int getTotalColumns() {
-		return columnCount;
+		return totalColumns;
 	}
 
 	/**
@@ -461,8 +460,8 @@ public class CsvP5 {
 	private void loadFile(String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
 				+ separator + ", comment: " + comment + ", removeEnclosingQuotationMarks: " + removeEnclosingQuotationMarks
-				+ "hasHeadline: " + hasRowHeader);
-		if(hasRowHeader){
+				+ "hasHeadline: " + hasRowHeaders);
+		if(hasRowHeaders){
 			columnHeaders = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
@@ -487,21 +486,21 @@ public class CsvP5 {
 				removeEnclosingQuotationMarks(pieces);
 			}
 			// Get rid of unnecessary leading and ending spaces
-			data[rowCount] = PApplet.trim(pieces);
+			data[totalRows] = PApplet.trim(pieces);
 			// check if the number of elements is the same as in the first line
-			if (data[rowCount].length != nFirstLineElements) {
-				LOGGER.log(Level.WARNING, "Found an incomplete line in the CSV! Row: " + rowCount 
+			if (data[totalRows].length != nFirstLineElements) {
+				LOGGER.log(Level.WARNING, "Found an incomplete line in the CSV! Row: " + totalRows 
 						+ ". Number of elements in first row and this row do not match!");
 				// set flag if not
 				isComplete = false;
 				if (firstIncompleteLine != -1) {
-					firstIncompleteLine = rowCount;
+					firstIncompleteLine = totalRows;
 				}
 			}
-			rowCount++;
+			totalRows++;
 		}
 		int startIndex = 0;
-		if(hasRowHeader){
+		if(hasRowHeaders){
 			startIndex = 1;
 			// store the headlines
 			for(int i=0; i<nFirstLineElements; i++){
@@ -510,12 +509,12 @@ public class CsvP5 {
 		}
 		// resize the 'data' array as necessary, 
 		// if there is the headline remove it from the array
-		data = (String[][]) PApplet.subset(data, startIndex, rowCount-startIndex);
+		data = (String[][]) PApplet.subset(data, startIndex, totalRows-startIndex);
 		// update rowCount
-		rowCount = data.length;
+		totalRows = data.length;
 		// Store the number of columns (data entries per line)
 		if (data.length >= 1) {
-			columnCount = data[0].length;
+			totalColumns = data[0].length;
 		}
 		else{
 			LOGGER.log(Level.WARNING, "There was an error importing the data. You can try to: " +
