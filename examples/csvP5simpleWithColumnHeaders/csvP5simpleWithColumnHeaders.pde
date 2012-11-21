@@ -1,5 +1,5 @@
 /**
- * csvP5simpleWithHeadline
+ * csvP5simpleWithColumnHeaders
  *
  * csvP5 http://www.github.com/wrongentertainment/csvP5
  */
