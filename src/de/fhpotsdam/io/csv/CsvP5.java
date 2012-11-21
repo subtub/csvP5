@@ -1,8 +1,8 @@
 //
 // CsvP5.java
-// ##library.name## (v.##library.prettyVersion##) is released under the MIT License.
+// CsvP5 (v.##library.prettyVersion##) is released under the MIT License.
 //
-// Copyright (c) 2012, ##author.name## http://www.fh-potsdam.de
+// Copyright (c) 2012, Tim Pulver & Paul Vollmer http://www.fh-potsdam.de
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 
 package de.fhpotsdam.io.csv;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -37,7 +38,7 @@ import de.fhpotsdam.util.math.Math;
 /**
  * CsvP5
  * Reading CSV(Character Separated Values) files.
- * Based on an example from Ben Fry's Visualizing Data Book.
+ * Inspired by Ben Fry's Visualizing Data Book.
  * @author ##author.name##
  * @example csvP5simple
  */
@@ -47,28 +48,31 @@ public class CsvP5 {
 	private static final String QUOTATION_MARK = "\"";
 	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
-	PApplet p5;                                    // processing reference for text loading and other stuff
+	private PApplet p5;                            // processing reference for text loading and other stuff
 	private String filename;                       // filename to load
 	private String separator;                      // default separator is ','
 	private String comment;                        // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasHeadline = false;           // if the document has a headline
-	private HashMap<Integer, String> headlines;    // stores the headlines (column index, headline name)
+	private boolean hasRowHeaders = false;          // if the document has horizontal headers
+	private boolean hasColumnHeaders = false;       // if the document has vertical headers
+	private HashMap<Integer, String> columnHeaders;    // stores the column headers (column index, headline name)
+	private HashMap<Integer, String> rowHeaders;    // stores the row headers (row index, headline name)
 
 	// flags - will be set while processing
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
 	
 	// Contains total number of rows/columns after loading a file.
-	// rowCounts will not contain headline if hasHeadline(true) has been called
-	private int rowCount, columnCount;
+	// rowCounts will not contain headline if hasHeadline(true) has been called, 
+	// will not contain skipped lines e.g. when you called startAtRow(...) before and empty lines. 
+	private int totalRows, totalColumns;
 	// Writer object - use for all modifications / writing
 	public CsvP5Writer writer;
 	
 	/**
 	 * The actual csv stored in an data array [row][column].
 	 */
-	public String[][] data;
+	private String[][] data;
 	
 	public Math math;
 	
@@ -83,25 +87,12 @@ public class CsvP5 {
 	 * ======================================================================|
 	 */
 	
-	/**
-	 * Forbidden, use the other constructors instead
-	 */
+	// Forbidden, use the other constructor instead
 	@SuppressWarnings("unused")
 	private CsvP5(){}
-	
-	/**
-	 * Constructor with least arguments, use this if your csv-file  
-	 * uses commas as separator and '#' for comments.
-	 * @param p Use "this" from within your Processing main sketch
-	 */
-	public CsvP5(PApplet p) {
-		LOGGER.log( Level.FINEST, "Constructor called");
-		init(p, "", DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
-	}
 
 	/**
-	 * Constructor with least arguments, use this if your csv-file  
-	 * uses commas as separator and '#' for comments.
+	 * Constructor for CsvP5.
 	 * @param p Use "this" from within your Processing main sketch
 	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
 	 */
@@ -110,69 +101,16 @@ public class CsvP5 {
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
 	
-	/**
-	 * Constructor with additional separator argument, use this if your csv-file 
-	 * <b>not</b> uses commas as separators.
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
-	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 */
-	public CsvP5(PApplet p, String filename, String separator) {
-		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
-	}
-	
-	/**
-	 * Constructor with additional separator and quotation-mark arguments, use this if your csv-file 
-	 * <b>not</b> uses commas as separators and has encolsing quotation marks 
-	 * e.g. "data1";"data2",... 
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
-	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
-	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here. 
-	 */
-	public CsvP5(PApplet p, String filename, String separator, boolean removeEnclosingQuotationMarks) {
-		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, DEFAULT_COMMENT,
-				removeEnclosingQuotationMarks);
-	}
-	/**
-	 * Constructor with additional separator, comment character and quotation-mark arguments, use this if your csv-file 
-	 * <b>not</b> uses commas as separators and <b>not</b> uses '#' as comment indicators. 
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
-	 * @param separator The character/string to use as separator e.g. ";" or "\t" (Tab)
-	 * @param comment The character/string which is used to introduce comments
-	 * @param removeEnclosingQuotationMarks If the data fields are surrounded by 
-	 * enclosing quotation marks (e.g. "data1";"data2"), pass <i>true</> here.
-	 */
-	public CsvP5(PApplet p, String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
-		LOGGER.log(Level.FINEST, "Constructor called");
-		init(p, filename, separator, comment, removeEnclosingQuotationMarks);
-	}
 	
 	/*
 	 * ======================================================================|
 	 * PUBLIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-
-	/**
-	 * Resets the processing-flags and starts the actual CSV-processing.
-	 * @param filename The csv filepath.
-	 */
-	public void load(String filename) {
-		this.filename = filename;
-		if(filename.equals("")){
-			LOGGER.log(Level.WARNING, "Could not load file '" + filename + "' - filename is empty!");
-			return;
-		}
-		load();
-	}
 	
 	/**
-	 * Resets the processing-flags and starts the actual CSV-processing.
+	 * Resets the processing-flags and starts the actual CSV-processing. 
+	 * All functions like setSeparator() or setComment() must be called <b>before</b> calling load()!
 	 */
 	public void load() {
 		LOGGER.log(Level.FINEST, "Load called");
@@ -185,47 +123,62 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Has to be called if your CSV-file has a headline. Default is no headline (false). 
-	 * @param b True, if is has a headline, false otherwise
+	 * Has to be called if the first row of your CSV-file (on top) contains headers. Default is no column headers (false). 
+	 * @param b True, if is has column headers, false otherwise
 	 */
-	public void hasHeadline(boolean b){
-		LOGGER.log(Level.FINEST, "hasHeadline set to " + b);
-		this.hasHeadline = b;
+	public void hasColumnHeaders(boolean b){
+		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
+		this.hasColumnHeaders = b;
+	}
+	
+	/**
+	 * Has to be called if the first <b>column</b> of your CSV-file (left) contains headers. Default is no row headers (false). 
+	 * @param b True, if is has row headers, false otherwise
+	 */
+	public void hasRowHeaders(boolean b){
+		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
+		this.hasRowHeaders = b;
 	}
 
 	/**
-	 * Returns true, if there were no problems parsing the file. 
-	 * @return
+	 * This is an indicator if loading the CSV-file went smooth. 
+	 * If it happened, that the number of the separator char/string  
+	 * in every row differs, this will return false. There is no check for  
+	 * holes, so parsing a row like "data,,data,data" will be fine and 
+	 * just contain a blank element.
+	 * @return true, if there were no problems parsing the file. 
 	 */
 	public boolean isComplete() {
 		return isComplete;
 	}
 
 	/**
-	 * If {@link #isComplete()} returns true, which means, there were errors 
-	 * parsing the CSV-file, this will return the first line with parsing-errors. 
-	 * @return The first problematic line.
+	 * If {@link #isComplete()} returns false, which means, there were errors 
+	 * parsing the CSV-file, this returns the row index of the CSV-file, which can be useful if 
+	 * you search for "bad spots" in the CSV-file and need to fix them manually.    
+	 * @return The index of the first problematic row, note that index begins at 0, 
+	 * line numbers of most text editors start at 1.
 	 */
-	public int firstIncompleteLine() {
+	public int getFirstIncompleteRowIndex() {
 		return firstIncompleteLine;
 	}
 	
 	/**
-	 * Returns the number of rows. If the document has headlines and 
-	 * hasHeadlines(true) has been called before CSV-import, this will <b>not</b> 
-	 * contain the headline.
-	 * @return rowCount Number of rows (without headline)
+	 * Returns the number of rows. If the document contains row headers and  
+	 * {@link #hasRowHeaders(boolean)} has been called with <i>true</i> before CSV-import, this will <b>not</b> 
+	 * contain the header row.
+	 * @return rowCount number of rows (without header row)
 	 */
-	public int getRowCount() {
-		return rowCount;
+	public int getTotalRows() {
+		return totalRows;
 	}
 
 	/**
 	 * Returns the number of columns.
 	 * @return columnCount Number of columns
 	 */
-	public int getColumnCount() {
-		return columnCount;
+	public int getTotalColumns() {
+		return totalColumns;
 	}
 
 	/**
@@ -237,7 +190,7 @@ public class CsvP5 {
 	 * @return integer index value of the column
 	 */
 	public int getColumnIndex(String name) {
-		for (Map.Entry<Integer, String> e : headlines.entrySet()) {
+		for (Map.Entry<Integer, String> e : columnHeaders.entrySet()) {
 		    int key = e.getKey();
 		    String value = e.getValue();
 		    if(value.equals(name)){
@@ -253,9 +206,12 @@ public class CsvP5 {
 	 * @param column the Column number, which name you want to know
 	 * @return String The column name (headline)
 	 */
-	public String getHeadlineName(int column) {
-		if(headlines.containsKey(column)){
-			return headlines.get(column);
+	public String getColumnHeader(int column) {
+		LOGGER.log(Level.FINEST, "Function start");
+		if(columnHeaders.containsKey(column)){
+			LOGGER.log(Level.FINEST, "Header with index " + column + "found!");
+			LOGGER.log(Level.FINEST, "Headername: " + columnHeaders.get(column));
+			return columnHeaders.get(column);
 		}
 		else{
 			LOGGER.log(Level.WARNING, "There is no headline with index " + column 
@@ -263,6 +219,12 @@ public class CsvP5 {
 			return "";
 		}
 	}
+	
+	/*
+	 * ======================================================================|
+	 * PUBLIC ELEMENT GETTERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
+	 */
 
 	/**
 	 * Returns the String of a specific row and column (untouched from the CSV-file).
@@ -343,7 +305,7 @@ public class CsvP5 {
 			LOGGER.log(Level.WARNING, "Could not parse "
 							+ sElement
 							+ " to float! "
-							+ "Seems like you tried to parse a non-integer data field.");
+							+ "Seems like you tried to parse a non-float data field.");
 		}
 		return ret;
 	}
@@ -380,11 +342,11 @@ public class CsvP5 {
 	
 	/**
 	 * Sets a new comment indicator, default is {@link #DEFAULT_COMMENT}
-	 * @param comment the new comment indicator
+	 * @param commentIndicator the new comment indicator
 	 */
-	public void setCommentIndicator(String comment){
-		LOGGER.log(Level.FINE, "Comment indicator set to " + comment); 
-		this.comment = comment;
+	public void setCommentIndicator(String commentIndicator){
+		LOGGER.log(Level.FINE, "Comment indicator set to " + commentIndicator); 
+		this.comment = commentIndicator;
 	}
 	
 	/**
@@ -409,12 +371,12 @@ public class CsvP5 {
 		
 	/*
 	 * ======================================================================|
-	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
 	
 	/**
-	 * Get's called by every constructor to store / initiate the class variables. 
+	 * Get's called by the constructor to store / initiate the class variables. 
 	 */
 	private void init(PApplet p, String filename, String separator,
 			String comment, boolean hasEnclosingQuotationMarks) {
@@ -464,9 +426,10 @@ public class CsvP5 {
 	}
 	
 	/**
-	 * Returns the number of elements in the first non-comment line
-	 * 
-	 * @param rows The CSV-data
+	 * Helper function, returns the number of elements in the first 
+	 * non-comment line, will be used to see of the number of elements 
+	 * from every row match each other (if the CSV file is complete).	 * 
+	 * @param rows The raw CSV-data
 	 * @return Number of elements
 	 */
 	private int getNumberOfElements(String[] rows) {
@@ -494,10 +457,10 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Checks if the elemnets start and end with quotation marks (e.g. "data" -> data) 
-	 * and deltes them if found.  
-	 * This will only delete the <b>first</b> and </last> quotation mark. 
-	 * If there are more, they will be left untouched.
+	 * Checks if the elements start and end with quotation marks (e.g. "data" -> data) 
+	 * and deletes them if found.  
+	 * This will only delete the <b>first</b> and <b>last</b> quotation mark,  
+	 * if there are more, they will be left untouched.
 	 * @param arr Array of Strings
 	 */
 	private void removeEnclosingQuotationMarks(String[] arr) {
@@ -513,7 +476,7 @@ public class CsvP5 {
 
 	/**
 	 * Does the actual CSV file parsing, skips empty and commented-out lines.  
-	 * Gets called by other loadFile() methods.  
+	 * Gets called by other loadFile() methods.
 	 * @param filename The filename of the csv-file within the data directory
 	 * @param separator Separator char/string
 	 * @param comments Introducing char/string for comments
@@ -523,9 +486,12 @@ public class CsvP5 {
 	private void loadFile(String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
 				+ separator + ", comment: " + comment + ", removeEnclosingQuotationMarks: " + removeEnclosingQuotationMarks
-				+ "hasHeadline: " + hasHeadline);
-		if(hasHeadline){
-			headlines = new HashMap<Integer, String>();
+				+ "hasHeadline: " + hasColumnHeaders);
+		if(hasColumnHeaders){
+			columnHeaders = new HashMap<Integer, String>();
+		}
+		if(hasRowHeaders){
+			rowHeaders = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
 
@@ -549,39 +515,56 @@ public class CsvP5 {
 				removeEnclosingQuotationMarks(pieces);
 			}
 			// Get rid of unnecessary leading and ending spaces
-			data[rowCount] = PApplet.trim(pieces);
+			data[totalRows] = PApplet.trim(pieces);
 			// check if the number of elements is the same as in the first line
-			if (data[rowCount].length != nFirstLineElements) {
-				LOGGER.log(Level.WARNING, "Found an incomplete line in the CSV! Row: " + rowCount 
+			if (data[totalRows].length != nFirstLineElements) {
+				LOGGER.log(Level.WARNING, "Found an incomplete line in the CSV! Row: " + totalRows 
 						+ ". Number of elements in first row and this row do not match!");
 				// set flag if not
 				isComplete = false;
 				if (firstIncompleteLine != -1) {
-					firstIncompleteLine = rowCount;
+					firstIncompleteLine = totalRows;
 				}
 			}
-			rowCount++;
+			totalRows++;
 		}
 		int startIndex = 0;
-		if(hasHeadline){
+		if(hasColumnHeaders){
 			startIndex = 1;
 			// store the headlines
 			for(int i=0; i<nFirstLineElements; i++){
-				headlines.put(i, data[0][i]);
+				columnHeaders.put(i, data[0][i]);
 			}
 		}
 		// resize the 'data' array as necessary, 
 		// if there is the headline remove it from the array
-		data = (String[][]) PApplet.subset(data, startIndex, rowCount-startIndex);
+		data = (String[][]) PApplet.subset(data, startIndex, totalRows-startIndex);
 		// update rowCount
-		rowCount = data.length;
+		totalRows = data.length;
 		// Store the number of columns (data entries per line)
 		if (data.length >= 1) {
-			columnCount = data[0].length;
+			totalColumns = data[0].length;
 		}
 		else{
 			LOGGER.log(Level.WARNING, "There was an error importing the data. You can try to: " +
 					"Set the separator and make sure that the line endings are okay");
 		}
 	}
+	
+	/*
+	public String[] splitString(String s, String separator){
+		ArrayList<String> list = new ArrayList<String>();
+		if(s == null){
+			throw(new NullPointerException("String is null"));
+		}
+		else{
+			String sCopy = new String(s);
+			int separatorInd = -1;
+			int separatorSearchInd = 0;
+			while((separatorInd = s.indexOf(separator, separatorSearchInd)) != -1){
+				
+			}
+		}
+	}
+	*/
 }
