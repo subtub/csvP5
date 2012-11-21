@@ -37,7 +37,7 @@ import de.fhpotsdam.util.math.Math;
 /**
  * CsvP5
  * Reading CSV(Character Separated Values) files.
- * Based on an example from Ben Fry's Visualizing Data Book.
+ * Inspired by Ben Fry's Visualizing Data Book.
  * @author ##author.name##
  * @example csvP5simple
  */
@@ -474,7 +474,7 @@ public class CsvP5 {
 
 	/**
 	 * Does the actual CSV file parsing, skips empty and commented-out lines.  
-	 * Gets called by other loadFile() methods.  
+	 * Gets called by other loadFile() methods.
 	 * @param filename The filename of the csv-file within the data directory
 	 * @param separator Separator char/string
 	 * @param comments Introducing char/string for comments
