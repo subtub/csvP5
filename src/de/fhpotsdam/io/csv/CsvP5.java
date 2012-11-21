@@ -205,7 +205,10 @@ public class CsvP5 {
 	 * @return String The column name (headline)
 	 */
 	public String getColumnHeader(int column) {
+		LOGGER.log(Level.FINEST, "Function start");
 		if(columnHeaders.containsKey(column)){
+			LOGGER.log(Level.FINEST, "Header with index " + column + "found!");
+			LOGGER.log(Level.FINEST, "Headername: " + columnHeaders.get(column));
 			return columnHeaders.get(column);
 		}
 		else{
@@ -481,8 +484,8 @@ public class CsvP5 {
 	private void loadFile(String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
 				+ separator + ", comment: " + comment + ", removeEnclosingQuotationMarks: " + removeEnclosingQuotationMarks
-				+ "hasHeadline: " + hasRowHeaders);
-		if(hasRowHeaders){
+				+ "hasHeadline: " + hasColumnHeaders);
+		if(hasColumnHeaders){
 			columnHeaders = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
@@ -521,7 +524,7 @@ public class CsvP5 {
 			totalRows++;
 		}
 		int startIndex = 0;
-		if(hasRowHeaders){
+		if(hasColumnHeaders){
 			startIndex = 1;
 			// store the headlines
 			for(int i=0; i<nFirstLineElements; i++){
