@@ -115,5 +115,51 @@ public class Math {
 		}
 	}
 	
+	/**
+	 * Parses the row with index rowIndex to float and return the biggest element. 
+	 * @param values the two-dimensional string array containing floats at [][columnIndex]
+	 * @param columnIndex the column index containing floats / integers
+	 * @param startIndex row start index
+	 * @param endIndex row end index
+	 * @return the biggest element in the specific column
+	 */
+	public static float getMax(String[][] values, int columnIndex, int startIndex, int endIndex){
+		float max = Float.MIN_VALUE;
+		if(values == null || values.length == 0){
+			throw new IllegalArgumentException("Values array is null or does not contain any data");
+		}
+		else if(startIndex<0 || endIndex > values[0].length || startIndex >= endIndex ){
+			throw new IllegalArgumentException("Start index needs to be smaller than end index and withing range of the array!");
+		}
+		float tmp = Float.MIN_VALUE;
+		for(int i=startIndex; i<endIndex; i++){
+			try{
+				tmp = Float.parseFloat(values[i][columnIndex]);
+				if(tmp > max){
+					max = tmp;
+				}
+				
+			}catch(NumberFormatException e){
+				throw new IllegalArgumentException("'" + values[i][columnIndex] + "' could not be parsed to float!");
+			}
+		}
+		return max;
+	}
+	
+	/**
+	 * Parses the row with index rowIndex to float and returns the biggest element. 
+	 * @param values the two-dimensional string array containing floats / integers at [][columnIndex]
+	 * @param columnIndex the column index containing floats / integers
+	 * @return the sum of all values in the specific column
+	 */
+	public static float getMax(String[][] values, int columnIndex){
+		if(values == null){
+			throw new IllegalArgumentException("Values array is null");
+		}
+		else{
+			return getMax(values, columnIndex, 0, values.length);
+		}
+	}
+	
 	
 }
