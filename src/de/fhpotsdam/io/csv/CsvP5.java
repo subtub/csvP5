@@ -47,7 +47,7 @@ public class CsvP5 {
 	private static final String QUOTATION_MARK = "\"";
 	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
-	PApplet p5;                                    // processing reference for text loading and other stuff
+	private PApplet p5;                                    // processing reference for text loading and other stuff
 	private String filename;                       // filename to load
 	private String separator;                      // default separator is ','
 	private String comment;                        // default comment char is '#'
@@ -84,20 +84,10 @@ public class CsvP5 {
 	 */
 	
 	/**
-	 * Forbidden, use the other constructors instead
+	 * Forbidden, use the other constructor instead
 	 */
 	@SuppressWarnings("unused")
 	private CsvP5(){}
-	
-	/**
-	 * Constructor with least arguments, use this if your csv-file  
-	 * uses commas as separator and '#' for comments.
-	 * @param p Use "this" from within your Processing main sketch
-	 */
-	public CsvP5(PApplet p) {
-		LOGGER.log( Level.FINEST, "Constructor called");
-		init(p, "", DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
-	}
 
 	/**
 	 * Constructor with least arguments, use this if your csv-file  
@@ -157,22 +147,10 @@ public class CsvP5 {
 	 * PUBLIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-
-	/**
-	 * Resets the processing-flags and starts the actual CSV-processing.
-	 * @param filename The csv filepath.
-	 */
-	public void load(String filename) {
-		this.filename = filename;
-		if(filename.equals("")){
-			LOGGER.log(Level.WARNING, "Could not load file '" + filename + "' - filename is empty!");
-			return;
-		}
-		load();
-	}
 	
 	/**
-	 * Resets the processing-flags and starts the actual CSV-processing.
+	 * Resets the processing-flags and starts the actual CSV-processing. 
+	 * All functions like setSeparator() or setComment() must be called <b>before</b> calling load()!
 	 */
 	public void load() {
 		LOGGER.log(Level.FINEST, "Load called");
@@ -343,7 +321,7 @@ public class CsvP5 {
 			LOGGER.log(Level.WARNING, "Could not parse "
 							+ sElement
 							+ " to float! "
-							+ "Seems like you tried to parse a non-integer data field.");
+							+ "Seems like you tried to parse a non-float data field.");
 		}
 		return ret;
 	}
