@@ -24,10 +24,12 @@ void setup() {
 void draw() {
   background(255);
   
-  fill(0);
   for(int col=0; col<csv.getTotalColumns(); col++) {
     int xPos = 25+(col*80);
+    fill(0);
     text(csv.getColumnHeader(col), xPos, 40);
+    
+    fill(100);
     for(int row=0; row<csv.getTotalRows(); row++) {
       text(csv.getString(row, col), xPos, 70+(row*15));
     }
