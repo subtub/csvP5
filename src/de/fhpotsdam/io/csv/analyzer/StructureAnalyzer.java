@@ -24,6 +24,10 @@ import de.fhpotsdam.util.map.MapUtil;
  * This class is <b>not</b> intended to remove whitespace or quotation marks from strings.
  * Checks for float does only include '.', not ','.
  * @author Tim Pulver
+ * 
+ * TODO: 
+ * - run auto guess not with headline (2nd, to 5th line e.g.)
+ * - seperate functions for headline guessing
  *
  */
 public class StructureAnalyzer {
