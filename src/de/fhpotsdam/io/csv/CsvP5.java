@@ -25,7 +25,6 @@
 
 package de.fhpotsdam.io.csv;
 
-//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -33,13 +32,12 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import processing.core.*;
-
 import de.fhpotsdam.util.math.Math;
 
 /**
  * CsvP5
- * 
- * based on Ben Fry's Visualizing Data Book
+ * Reading CSV(Character Separated Values) files.
+ * Based on an example from Ben Fry's Visualizing Data Book.
  * @author ##author.name##
  * @example csvP5simple
  */
@@ -49,13 +47,13 @@ public class CsvP5 {
 	private static final String QUOTATION_MARK = "\"";
 	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
-	PApplet p5; // processing reference for text loading and other stuff
-	private String filename; // filename to load
-	private String separator; // default separator is ','
-	private String comment; // default comment char is '#'
+	PApplet p5;                                    // processing reference for text loading and other stuff
+	private String filename;                       // filename to load
+	private String separator;                      // default separator is ','
+	private String comment;                        // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasHeadline = false; // if the document has a headline
-	private HashMap<Integer, String> headlines; // stores the headlines (column index, headline name)
+	private boolean hasHeadline = false;           // if the document has a headline
+	private HashMap<Integer, String> headlines;    // stores the headlines (column index, headline name)
 
 	// flags - will be set while processing
 	private boolean isComplete = false;
@@ -73,6 +71,7 @@ public class CsvP5 {
 	public String[][] data;
 	
 	public Math math;
+	
 	// Logger for logging / debugging
 	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
 	private final static Level DEFAULT_DEBUG_LEVEL = Level.INFO;  
@@ -186,7 +185,7 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Has to be called if your CSV-file has a headline. Default is no headline. 
+	 * Has to be called if your CSV-file has a headline. Default is no headline (false). 
 	 * @param b True, if is has a headline, false otherwise
 	 */
 	public void hasHeadline(boolean b){
