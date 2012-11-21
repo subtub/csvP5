@@ -55,7 +55,8 @@ public class CsvP5 {
 	private boolean hasEnclosingQuotationMarks;
 	private boolean hasRowHeaders = false;          // if the document has horizontal headers
 	private boolean hasColumnHeaders = false;       // if the document has vertical headers
-	private HashMap<Integer, String> columnHeaders;    // stores the headlines (column index, headline name)
+	private HashMap<Integer, String> columnHeaders;    // stores the column headers (column index, headline name)
+	private HashMap<Integer, String> rowHeaders;    // stores the row headers (row index, headline name)
 
 	// flags - will be set while processing
 	private boolean isComplete = false;
@@ -488,6 +489,9 @@ public class CsvP5 {
 				+ "hasHeadline: " + hasColumnHeaders);
 		if(hasColumnHeaders){
 			columnHeaders = new HashMap<Integer, String>();
+		}
+		if(hasRowHeaders){
+			rowHeaders = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
 
