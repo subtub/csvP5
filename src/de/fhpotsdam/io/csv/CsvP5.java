@@ -47,20 +47,22 @@ public class CsvP5 {
 	private static final String QUOTATION_MARK = "\"";
 	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
-	private PApplet p5;                                    // processing reference for text loading and other stuff
+	private PApplet p5;                            // processing reference for text loading and other stuff
 	private String filename;                       // filename to load
 	private String separator;                      // default separator is ','
 	private String comment;                        // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasHeadline = false;           // if the document has a headline
-	private HashMap<Integer, String> headlines;    // stores the headlines (column index, headline name)
+	private boolean hasRowHeader = false;          // if the document has horizontal headers
+	private boolean hasColumnHeader = false;       // if the document has vertical headers
+	private HashMap<Integer, String> columnHeaders;    // stores the headlines (column index, headline name)
 
 	// flags - will be set while processing
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
 	
 	// Contains total number of rows/columns after loading a file.
-	// rowCounts will not contain headline if hasHeadline(true) has been called
+	// rowCounts will not contain headline if hasHeadline(true) has been called, 
+	// will not contain skipped lines e.g. when you called startAtRow(...) before and empty lines. 
 	private int rowCount, columnCount;
 	// Writer object - use for all modifications / writing
 	public CsvP5Writer writer;
@@ -168,7 +170,7 @@ public class CsvP5 {
 	 */
 	public void hasHeadline(boolean b){
 		LOGGER.log(Level.FINEST, "hasHeadline set to " + b);
-		this.hasHeadline = b;
+		this.hasRowHeader = b;
 	}
 
 	/**
@@ -215,7 +217,7 @@ public class CsvP5 {
 	 * @return integer index value of the column
 	 */
 	public int getColumnIndex(String name) {
-		for (Map.Entry<Integer, String> e : headlines.entrySet()) {
+		for (Map.Entry<Integer, String> e : columnHeaders.entrySet()) {
 		    int key = e.getKey();
 		    String value = e.getValue();
 		    if(value.equals(name)){
@@ -232,8 +234,8 @@ public class CsvP5 {
 	 * @return String The column name (headline)
 	 */
 	public String getHeadlineName(int column) {
-		if(headlines.containsKey(column)){
-			return headlines.get(column);
+		if(columnHeaders.containsKey(column)){
+			return columnHeaders.get(column);
 		}
 		else{
 			LOGGER.log(Level.WARNING, "There is no headline with index " + column 
@@ -501,9 +503,9 @@ public class CsvP5 {
 	private void loadFile(String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
 		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
 				+ separator + ", comment: " + comment + ", removeEnclosingQuotationMarks: " + removeEnclosingQuotationMarks
-				+ "hasHeadline: " + hasHeadline);
-		if(hasHeadline){
-			headlines = new HashMap<Integer, String>();
+				+ "hasHeadline: " + hasRowHeader);
+		if(hasRowHeader){
+			columnHeaders = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
 
@@ -541,11 +543,11 @@ public class CsvP5 {
 			rowCount++;
 		}
 		int startIndex = 0;
-		if(hasHeadline){
+		if(hasRowHeader){
 			startIndex = 1;
 			// store the headlines
 			for(int i=0; i<nFirstLineElements; i++){
-				headlines.put(i, data[0][i]);
+				columnHeaders.put(i, data[0][i]);
 			}
 		}
 		// resize the 'data' array as necessary, 
