@@ -34,18 +34,18 @@ void draw() {
     }
   }
   
-  line(400, 35, 400, 135);
-  line(45, 160, 370, 160);
+  line(410, 35, 410, 395);
+  line(45, 450, 370, 450);
   fill(70, 140, 210);
-  text("sum", 15, 200);
+  text("sum", 15, 180);
   for(int col=0; col<csv.getRowCount(); col++) {
-    //int sum = int(csv.math.getSum(csv.data[0], 0, col)); 
-    //text(sum, 50+(col*75), 200);
+    //int sum = int(csv.math.getSum(csv.data, col, 0, csv.getColumnCount()));
+    text(sum, 50+(col*75), 180);
   }
-  text("sum", 440, 30);
-  for(int row=0; row<csv.getColumnCount(); row++) {
-    float sum = csv.math.getSum(csv.data, row, 0, csv.getColumnCount());
-    text(sum, 440, 50+(row*20));
+  text("sum", 430, 30);
+  for(int row=0; row<csv.getRowCount(); row++) {
+    int sum = int(csv.math.getSum(csv.data[row], 0, csv.getColumnCount()));
+    text(sum, 430, 50+(row*20));
   }
   
 }
