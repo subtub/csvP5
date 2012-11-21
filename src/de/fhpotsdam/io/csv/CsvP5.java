@@ -70,7 +70,7 @@ public class CsvP5 {
 	/**
 	 * The actual csv stored in an data array [row][column].
 	 */
-	public String[][] data;
+	private String[][] data;
 	
 	public Math math;
 	
@@ -186,7 +186,7 @@ public class CsvP5 {
 	 * parsing the CSV-file, this will return the first line with parsing-errors. 
 	 * @return The first problematic line.
 	 */
-	public int firstIncompleteLine() {
+	public int getFirstIncompleteLine() {
 		return firstIncompleteLine;
 	}
 	
@@ -196,7 +196,7 @@ public class CsvP5 {
 	 * contain the headline.
 	 * @return rowCount Number of rows (without headline)
 	 */
-	public int getRowCount() {
+	public int getTotalRows() {
 		return rowCount;
 	}
 
@@ -204,7 +204,7 @@ public class CsvP5 {
 	 * Returns the number of columns.
 	 * @return columnCount Number of columns
 	 */
-	public int getColumnCount() {
+	public int getTotalColumns() {
 		return columnCount;
 	}
 
@@ -233,7 +233,7 @@ public class CsvP5 {
 	 * @param column the Column number, which name you want to know
 	 * @return String The column name (headline)
 	 */
-	public String getHeadlineName(int column) {
+	public String getColumnHeader(int column) {
 		if(columnHeaders.containsKey(column)){
 			return columnHeaders.get(column);
 		}
@@ -360,11 +360,11 @@ public class CsvP5 {
 	
 	/**
 	 * Sets a new comment indicator, default is {@link #DEFAULT_COMMENT}
-	 * @param comment the new comment indicator
+	 * @param commentIndicator the new comment indicator
 	 */
-	public void setCommentIndicator(String comment){
-		LOGGER.log(Level.FINE, "Comment indicator set to " + comment); 
-		this.comment = comment;
+	public void setCommentIndicator(String commentIndicator){
+		LOGGER.log(Level.FINE, "Comment indicator set to " + commentIndicator); 
+		this.comment = commentIndicator;
 	}
 	
 	/**
