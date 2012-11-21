@@ -20,6 +20,7 @@
 	<div id="container">
 	
 		<div id="header">
+			<img src="files/img/header.jpg">
 			<h1>##library.name##</h1>
 		</div>
 		
@@ -47,8 +48,18 @@
 			<p>
 			##library.sentence##<br>
 			##library.paragraph##<br>
-			Feel free to replace this paragraph with a description of the library.<br>
-			Contributed libraries are developed, documented, and maintained by members of the Processing community. Further directions are included with each library. For feedback and support, please post to the Discourse. We strongly encourage all libraries to be open source, but not all of them are.
+			Processing Library for reading CSV(Character Separated Values) Files.<br><br>
+			"The use of tables is pervasive throughout all communication, research and data analysis. Tables appear in print media, handwritten notes, computer software, architectural ornamentation, traffic signs and many other places. The precise conventions and terminology for describing tables varies depending on the context. Further, tables differ significantly in variety, structure, flexibility, notation, representation and use.<br>
+			<br>
+			A table consists of an ordered arrangement of rows and columns. This is a simplified description of the most basic kind of table. Certain considerations follow from this simplified description:
+			<ui>
+				<li>the term row has several common synonyms (e.g., record, k-tuple, n-tuple, vector);</li>
+				<li>the term column has several common synonyms (e.g., field, parameter, property, attribute);</li>
+				<li>a column is usually identified by a name;</li>
+				<li>a column name can consist of a word, phrase or a numerical index;</li>
+				<li>the intersection of a row and a column is a cell.</li>
+			</ui><br>
+			The elements of a table may be grouped, segmented, or arranged in many different ways, and even nested recursively. Additionally, a table may include metadata, annotations, header,[6] footer or other ancillary features."<br>Source: <a href="http://en.wikipedia.org/wiki/Table_(information)">wikipedia</a>
 			</p>
 			</div>
 			
@@ -58,7 +69,8 @@
 			<h2>Download</h2>
 			<p>
 			Download ##library.name## version ##library.prettyVersion## (##library.version##) in 
-			<a href="./download/##library.name##-##library.version##.zip">.zip format</a>.
+			<!-- <a href="./download/##library.name##-##library.version##.zip">.zip format</a>. -->
+			<a href="https://github.com/downloads/WrongEntertainment/csvP5/csvP5.zip">.zip format</a>.
 			</p>
 			<h2>Installation</h2>
 			<p>
@@ -77,10 +89,121 @@
 			<div id="examples" class="clear">
 			<h2>Examples</h2>
 			<p>Find a list of examples in the current distribution of ##library.name##, or have a look at them by following the links below.</p>
-			<ul>
+			<p><ul>
 			##examples##
-			</ul>
+			</ul></p>
+			<h2>Using different CSV table types</h2>
+			<table>
+				<tr>
+					<td><img src="files/img/1d_row.jpg" width="50%"></td>
+					<td valign="top">
+						<br><b>1 Dimensional table (columns)</b><br>
+						This table type contains one column and n* rows.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="files/img/1d_col.jpg" width="50%"></td>
+					<td valign="top">
+						<br><b>1 Dimensional table (rows)</b><br>
+						This table type contains one row and n* columns.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="files/img/2d.jpg" width="50%"></td>
+					<td valign="top">
+						<br><b>Multidimensional table</b><br>
+						This table type contains n* rows/columns.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="files/img/1d_row_head.jpg" width="50%"></td>
+					<td valign="top">
+						<br><b>1 Dimensional table with Header (columns)</b><br>
+						Same as 1 Dimensional table plus header columns.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="files/img/1d_col_head.jpg" width="50%"></td>
+					<td valign="top">
+						<br><b>1 Dimensional table with Header (rows)</b><br>
+						Same as 1 Dimensional table plus header rows.
+					</td>
+				</tr>
+				<tr>
+					<td><img src="files/img/2d_head.jpg" width="50%"></td>
+					<td valign="top">
+						<br><b>Multidimensional table with Header</b><br>
+						Same as Multidimensional table plus header rows/columns.
+					</td>
+				</tr>
+			</table>
+			<div class="tableSample">
+			Different Table Examples:<br><br>
+			
+				Content of all rows/cols has the same data type (integer, float, string, boolean)<br><br>
+				<table width="100%" style="background: #ccc;">
+			  		<tr><td>INT 11</td><td>INT 12</td><td>INT 13</td><td>INT 14</td><td>INT 15</td></tr>
+			  		<tr><td>INT 21</td><td>INT 22</td><td>INT 23</td><td>INT 24</td><td>INT 25</td></tr>
+					<tr><td>INT 31</td><td>INT 32</td><td>INT 33</td><td>INT 34</td><td>INT 35</td></tr>
+					<tr><td>INT 41</td><td>INT 42</td><td>INT 43</td><td>INT 44</td><td>INT 45</td></tr>
+					<tr><td>INT 51</td><td>INT 52</td><td>INT 53</td><td>INT 54</td><td>INT 55</td></tr>
+				</table>
+				<br>
+				
+				Content of the rows has the same datatype<br><br>
+				<table width="100%">
+			  		<tr style="background: #ccc;"><td>INT 11</td><td>INT 12</td><td>INT 13</td><td>INT 14</td><td>INT 15</td></tr>
+			  		<tr><td>FLOAT 21.0</td><td>FLOAT 22.0</td><td>FLOAT 23.0</td><td>FLOAT 24.0</td><td>FLOAT 25.0</td></tr>
+					<tr style="background: #ccc;"><td>INT 31</td><td>INT 32</td><td>INT 33</td><td>INT 34</td><td>INT 35</td></tr>
+					<tr><td>FLOAT 41.0</td><td>FLOAT 42.0</td><td>FLOAT 43.0</td><td>FLOAT 44.0</td><td>FLOAT 45.0</td></tr>
+					<tr style="background: #ccc;"><td>INT 51</td><td>INT 52</td><td>INT 53</td><td>INT 54</td><td>INT 55</td></tr>
+				</table>
+				<br>
+				
+				Content float<br><br>
+				<table width="100%">
+			  		<tr><td style="background: #ccc;">INT 11</td><td>FLOAT 12.0</td><td style="background: #ccc;">INT 13</td><td>FLOAT 14.0</td><td style="background: #ccc;">INT 15</td></tr>
+			  		<tr><td style="background: #ccc;">INT 21</td><td>FLOAT 22.0</td><td style="background: #ccc;">INT 23</td><td>FLOAT 24.0</td><td style="background: #ccc;">INT 25</td></tr>
+					<tr><td style="background: #ccc;">INT 31</td><td>FLOAT 32.0</td><td style="background: #ccc;">INT 33</td><td>FLOAT 34.0</td><td style="background: #ccc;">INT 35</td></tr>
+					<tr><td style="background: #ccc;">INT 41</td><td>FLOAT 42.0</td><td style="background: #ccc;">INT 43</td><td>FLOAT 44.0</td><td style="background: #ccc;">INT 45</td></tr>
+					<tr><td style="background: #ccc;">INT 51</td><td>FLOAT 52.0</td><td style="background: #ccc;">INT 53</td><td>FLOAT 54.0</td><td style="background: #ccc;">INT 55</td></tr>
+				</table>
+				<br>
+				
+				Table with row head<br><br>
+				<table width="100%">
+					<tr style="background: #ccc;"><th>HEAD 1</th><th>HEAD 2</th><th>HEAD 3</th><th>HEAD 4</th><th>HEAD 5</th></tr>
+			  		<tr><td>INT 11</td><td>INT 12</td><td>INT 13</td><td>INT 14</td><td>INT 15</td></tr>
+			  		<tr><td>INT 21</td><td>INT 22</td><td>INT 23</td><td>INT 24</td><td>INT 25</td></tr>
+					<tr><td>INT 31</td><td>INT 32</td><td>INT 33</td><td>INT 34</td><td>INT 35</td></tr>
+					<tr><td>INT 41</td><td>INT 42</td><td>INT 43</td><td>INT 44</td><td>INT 45</td></tr>
+					<tr><td>INT 51</td><td>INT 52</td><td>INT 53</td><td>INT 54</td><td>INT 55</td></tr>
+				</table>
+				<br>
+				
+				Table with col head<br><br>
+				<table width="100%">
+			  		<tr><th style="background: #ccc;">HEAD 1</th><td>INT 11</td><td>INT 12</td><td>INT 13</td><td>INT 14</td><td>INT 15</td></tr>
+			  		<tr><th style="background: #ccc;">HEAD 2</th><td>INT 21</td><td>INT 22</td><td>INT 23</td><td>INT 24</td><td>INT 25</td></tr>
+					<tr><th style="background: #ccc;">HEAD 3</th><td>INT 31</td><td>INT 32</td><td>INT 33</td><td>INT 34</td><td>INT 35</td></tr>
+					<tr><th style="background: #ccc;">HEAD 4</th><td>INT 41</td><td>INT 42</td><td>INT 43</td><td>INT 44</td><td>INT 45</td></tr>
+					<tr><th style="background: #ccc;">HEAD 5</th><td>INT 51</td><td>INT 52</td><td>INT 53</td><td>INT 54</td><td>INT 55</td></tr>
+				</table>
+				<br>
+				
+				Table with row/col head<br><br>
+				<table width="100%">
+			  		<tr style="background: #ccc;"><th> </th><th>HEAD 1</th><th>HEAD 2</th><th>HEAD 3</th><th>HEAD 4</th><th>HEAD 5</th></tr>
+			  		<tr><th style="background: #ccc;">HEAD 1</th><td>INT 11</td><td>INT 12</td><td>INT 13</td><td>INT 14</td><td>INT 15</td></tr>
+					<tr><th style="background: #ccc;">HEAD 2</th><td>INT 21</td><td>INT 22</td><td>INT 23</td><td>INT 24</td><td>INT 25</td></tr>
+					<tr><th style="background: #ccc;">HEAD 3</th><td>INT 31</td><td>INT 32</td><td>INT 33</td><td>INT 34</td><td>INT 35</td></tr>
+					<tr><th style="background: #ccc;">HEAD 4</th><td>INT 41</td><td>INT 42</td><td>INT 43</td><td>INT 44</td><td>INT 45</td></tr>
+					<tr><th style="background: #ccc;">HEAD 5</th><td>INT 51</td><td>INT 52</td><td>INT 53</td><td>INT 54</td><td>INT 55</td></tr>
+				</table>
+				<br>
 			</div>
+			</div>
+			
 			
 			
 			<div id="info">
