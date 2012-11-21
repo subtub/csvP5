@@ -25,6 +25,7 @@
 
 package de.fhpotsdam.io.csv;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -545,4 +546,21 @@ public class CsvP5 {
 					"Set the separator and make sure that the line endings are okay");
 		}
 	}
+	
+	/*
+	public String[] splitString(String s, String separator){
+		ArrayList<String> list = new ArrayList<String>();
+		if(s == null){
+			throw(new NullPointerException("String is null"));
+		}
+		else{
+			String sCopy = new String(s);
+			int separatorInd = -1;
+			int separatorSearchInd = 0;
+			while((separatorInd = s.indexOf(separator, separatorSearchInd)) != -1){
+				
+			}
+		}
+	}
+	*/
 }
