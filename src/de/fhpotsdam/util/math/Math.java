@@ -82,19 +82,20 @@ public class Math {
 	 * @param endIndex row end index
 	 * @return the sum of all values in the specific column
 	 */
-	public static float getSum(String[][] values, int columnIndex, int startIndex, int endIndex){
+	public static float getSum(String[][] values, int columnIndex, int startIndex, int endIndex) throws IllegalArgumentException{
 		float sum = 0.0f;
 		if(values == null || values.length == 0){
 			throw new IllegalArgumentException("Values array is null or does not contain any data");
 		}
-		else if(startIndex<0 || endIndex > values[0].length || startIndex >= endIndex ){
+		else if(startIndex<0 || endIndex > values.length || startIndex >= endIndex ){
 			throw new IllegalArgumentException("Start index needs to be smaller than end index and withing range of the array!");
 		}
 		for(int i=startIndex; i<endIndex; i++){
 			try{
 				sum += Float.parseFloat(values[i][columnIndex]);
 			}catch(NumberFormatException e){
-				throw new IllegalArgumentException("'" + values[i][columnIndex] + "' could not be parsed to float!");
+				throw new IllegalArgumentException("'" + values[i][columnIndex] + "' could not be parsed to float!  "+ "" +
+						"Mabe a ',' was used instead of '.'?");
 			}
 		}
 		return sum;
@@ -128,7 +129,7 @@ public class Math {
 		if(values == null || values.length == 0){
 			throw new IllegalArgumentException("Values array is null or does not contain any data");
 		}
-		else if(startIndex<0 || endIndex > values[0].length || startIndex >= endIndex ){
+		else if(startIndex<0 || endIndex > values.length || startIndex >= endIndex ){
 			throw new IllegalArgumentException("Start index needs to be smaller than end index and withing range of the array!");
 		}
 		float tmp = Float.MIN_VALUE;

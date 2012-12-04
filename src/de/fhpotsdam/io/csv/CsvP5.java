@@ -75,7 +75,7 @@ public class CsvP5 {
 	 */
 	private String[][] data;
 	
-	public Math math;
+	//public Math math;
 	
 	// Logger for logging / debugging
 	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
@@ -218,6 +218,72 @@ public class CsvP5 {
 			LOGGER.log(Level.WARNING, "There is no headline with index " + column 
 					+ ". Did you call hasHeadline(true) before loading the file?");
 			return "";
+		}
+	}
+	
+	/*
+	 * ======================================================================|
+	 * PUBLIC MATH FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+	 * ======================================================================|
+	 */
+
+	/**
+	 * Returns the biggest value within one column as float
+	 * @param columnIndex Index of the column (headlines do not count)
+	 * @return biggest value, -1 if column was not found
+	 */
+	public float getColumnMax(int columnIndex){
+		if(columnIndex >= 0 && columnIndex < totalColumns){
+			return Math.getMax(data, columnIndex);
+		}
+		else{
+			LOGGER.warning("columnIndex is out of range! it must be in the range [0.." + totalColumns + "], returning -1!");
+			return -1f;
+		}
+	}
+	
+	/**
+	 * Returns the biggest value within one column as float
+	 * @param columnName header name of the column
+	 * @return biggest value, -1 if column was not found
+	 */
+	public float getColumnMax(String columnName){
+		if(columnHeaders.containsValue(columnName)){
+			return Math.getMax(data, getColumnIndex(columnName));
+		}
+		else{
+			LOGGER.log(Level.WARNING,  "No column headline named '" + columnName + "' found!");
+			return -1f;
+		}
+	}
+	
+	/**
+	 * Returns the biggest value within one column as float
+	 * @param columnIndex Index of the column (headlines do not count)
+	 * @return biggest value, -1 if column was not found
+	 */
+	public float getColumnMax(int columnIndex, int startIndex, int endIndex){
+		if(columnIndex >= 0 && columnIndex < totalColumns){
+			return Math.getMax(data, columnIndex, startIndex, endIndex);
+		}
+		else{
+			LOGGER.warning("columnIndex is out of range! it must be in the range [0.." + totalColumns + "], returning -1!");
+			return -1f;
+		}
+	}
+	
+	/**
+	 * Returns the biggest value within [startIndex..endIndex-1] of one column as float
+	 * @param columnName header name of the column
+	 * @return biggest value, -1 if column was not found
+	 */
+	public float getColumnMax(String columnName, int startIndex, int endIndex){
+		if(columnHeaders.containsValue(columnName)){
+			return Math.getMax(data, getColumnIndex(columnName), startIndex, endIndex);
+		}
+		else{
+			LOGGER.log(Level.WARNING,  "No column headline named '" + columnName + "' found!");
+			return -1f;
 		}
 	}
 	
