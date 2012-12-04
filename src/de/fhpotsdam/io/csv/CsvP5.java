@@ -69,6 +69,9 @@ public class CsvP5 {
 	private int totalRows, totalColumns;
 	// Writer object - use for all modifications / writing
 	public CsvP5Writer writer;
+	// to replace the splitStrings function, we need to edit some p5 functions
+	
+	private EditedP5Functions p5Edits;	
 	
 	/**
 	 * The actual csv stored in an data array [row][column].
@@ -578,9 +581,7 @@ public class CsvP5 {
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
-			if (removeEnclosingQuotationMarks) {
-				removeEnclosingQuotationMarks(pieces);
-			}
+
 			// Get rid of unnecessary leading and ending spaces
 			data[totalRows] = PApplet.trim(pieces);
 			// check if the number of elements is the same as in the first line
@@ -618,20 +619,58 @@ public class CsvP5 {
 		}
 	}
 	
-	/*
-	public String[] splitString(String s, String separator){
-		ArrayList<String> list = new ArrayList<String>();
-		if(s == null){
-			throw(new NullPointerException("String is null"));
-		}
-		else{
-			String sCopy = new String(s);
-			int separatorInd = -1;
-			int separatorSearchInd = 0;
-			while((separatorInd = s.indexOf(separator, separatorSearchInd)) != -1){
-				
-			}
-		}
-	} 
-	*/
+	/**
+	 * When using Processing.split on a row with delimiter chars 
+	 * withing the data (enclosed by quotation marks), this will 
+	 * repair the array by mergin the splitted elements again. 
+	 * The function will remove the quotation marks after the merge.
+	 * If the quotation marks only appear hear and there .. forget it!
+	 * @param orig String Array containing elements like >>"data<< or <<data"<<. 
+	 * @return cleaned Array
+	 */
+	private String[] repairBadStringArray(String[] orig){
+		    char Q = '\"';
+		    String[] a = new String[orig.length];
+		    boolean merge = false;
+		    int i = 0;
+		    for(String s: orig){
+		      int firstQ = s.indexOf(Q);
+		      int lastQ = s.lastIndexOf(Q); 
+		      if(merge){
+		        // -> data" -> put at end of last String
+		        if(i >= 0 && firstQ == lastQ && lastQ == s.length()-1){
+		          a[i] += s.substring(0, s.length()-1);
+		         merge = false;
+		         i++;
+		         continue; 
+		        }
+		      }
+		      // good one -> "data" or data
+		      if(firstQ == 0 && lastQ == s.length()-1 || firstQ == -1 && lastQ == -1){
+		        a[i] = new String(s.substring(1, s.length()-1));
+		        i++;
+		      }      
+		      // bad one -> "data
+		      else if(firstQ == 0 && lastQ == 0){
+		        merge = true;
+		        a[i] = new String(s.substring(1, s.length()));
+		      }
+		    }
+		    return getArrayWithoutNull(a);
+		  }
+		  
+	/**
+	 * Checks for null elements in the array and creates a new one without them
+	 * @param a String Array containing null characters
+	 * @return clean array
+	 */
+		  private String[] getArrayWithoutNull(String[] a){
+		    ArrayList<String> al = new ArrayList<String>();
+		    for(String s: a){
+		      if(s != null){
+		        al.add(s);
+		      }
+		    }
+		    return al.toArray(new String[al.size()]);
+		  }
 }
