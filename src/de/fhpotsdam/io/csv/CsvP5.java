@@ -36,9 +36,9 @@ import processing.core.*;
 import de.fhpotsdam.util.math.Math;
 
 /**
- * CsvP5
- * Reading CSV(Character Separated Values) files.
- * Inspired by Ben Fry's Visualizing Data Book.
+ * CsvP5 Reading CSV(Character Separated Values) files. Inspired by Ben Fry's
+ * Visualizing Data Book.
+ * 
  * @author ##author.name##
  * @example csvP5simple
  */
@@ -48,41 +48,45 @@ public class CsvP5 {
 	private static final String QUOTATION_MARK = "\"";
 	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
 
-	private PApplet p5;                            // processing reference for text loading and other stuff
-	private String filename;                       // filename to load
-	private String separator;                      // default separator is ','
-	private String comment;                        // default comment char is '#'
+	private PApplet p5; // processing reference for text loading and other stuff
+	private String filename; // filename to load
+	private String separator; // default separator is ','
+	private String comment; // default comment char is '#'
 	private boolean hasEnclosingQuotationMarks;
-	private boolean hasRowHeaders = false;          // if the document has horizontal headers
-	private boolean hasColumnHeaders = false;       // if the document has vertical headers
-	private HashMap<Integer, String> columnHeaders;    // stores the column headers (column index, headline name)
-	private HashMap<Integer, String> rowHeaders;    // stores the row headers (row index, headline name)
+	private boolean hasRowHeaders = false; // if the document has horizontal
+											// headers
+	private boolean hasColumnHeaders = false; // if the document has vertical
+												// headers
+	private HashMap<Integer, String> columnHeaders; // stores the column headers
+													// (column index, headline
+													// name)
+	private HashMap<Integer, String> rowHeaders; // stores the row headers (row
+													// index, headline name)
 
 	// flags - will be set while processing
 	private boolean isComplete = false;
 	private int firstIncompleteLine = -1;
-	
+
 	// Contains total number of rows/columns after loading a file.
-	// rowCounts will not contain headline if hasHeadline(true) has been called, 
+	// rowCounts will not contain headline if hasHeadline(true) has been called,
 	// will not contain skipped lines e.g. when you called startAtRow(...)
-	// before and empty lines. 
+	// before and empty lines.
 	private int totalRows, totalColumns;
 	// Writer object - use for all modifications / writing
 	public CsvP5Writer writer;
 	// to replace the splitStrings function, we need to edit some p5 functions
-	
-	private EditedP5Functions p5Edits;	
-	
+
 	/**
 	 * The actual csv stored in an data array [row][column].
 	 */
 	private String[][] data;
-	
-	//public Math math;
-	
+
+	// public Math math;
+
 	// Logger for logging / debugging
-	private final static Logger LOGGER = Logger.getLogger(CsvP5.class .getName());
-	private final static Level DEFAULT_DEBUG_LEVEL = Level.INFO;  
+	private final static Logger LOGGER = Logger
+			.getLogger(CsvP5.class.getName());
+	private final static Level DEFAULT_DEBUG_LEVEL = Level.INFO;
 	private static Level debugLevel;
 
 	/*
@@ -90,36 +94,43 @@ public class CsvP5 {
 	 * CONSTRUCTORS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-	
+
 	// Forbidden, use the other constructor instead
 	@SuppressWarnings("unused")
-	private CsvP5(){}
+	private CsvP5() {
+	}
 
 	/**
 	 * Constructor for CsvP5.
-	 * @param p Use "this" from within your Processing main sketch
-	 * @param filename Filename of a csv-file in your data-folder e.g. "awesome_data.csv"
+	 * 
+	 * @param p
+	 *            Use "this" from within your Processing main sketch
+	 * @param filename
+	 *            Filename of a csv-file in your data-folder e.g.
+	 *            "awesome_data.csv"
 	 */
 	public CsvP5(PApplet p, String filename) {
-		LOGGER.log( Level.FINEST, "Constructor called");
-		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT, REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
+		LOGGER.log(Level.FINEST, "Constructor called");
+		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT,
+				REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
-	
-	
+
 	/*
 	 * ======================================================================|
 	 * PUBLIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-	
+
 	/**
-	 * Resets the processing-flags and starts the actual CSV-processing. 
-	 * All functions like setSeparator() or setComment() must be called <b>before</b> calling load()!
+	 * Resets the processing-flags and starts the actual CSV-processing. All
+	 * functions like setSeparator() or setComment() must be called
+	 * <b>before</b> calling load()!
 	 */
 	public void load() {
 		LOGGER.log(Level.FINEST, "Load called");
-		if(filename.equals("")){
-			LOGGER.log(Level.WARNING, "No filename has been set! Make sure to call setFilename() before!");
+		if (filename.equals("")) {
+			LOGGER.log(Level.WARNING,
+					"No filename has been set! Make sure to call setFilename() before!");
 			return;
 		}
 		resetFlags();
@@ -127,50 +138,64 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Has to be called if the first row of your CSV-file (on top) contains headers. Default is no column headers (false). 
-	 * @param b True, if is has column headers, false otherwise
+	 * Has to be called if the first row of your CSV-file (on top) contains
+	 * headers. Default is no column headers (false).
+	 * 
+	 * @param b
+	 *            True, if is has column headers, false otherwise
 	 */
-	public void hasColumnHeaders(boolean b){
+	public void hasColumnHeaders(boolean b) {
 		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
 		this.hasColumnHeaders = b;
 	}
-	
+
 	/**
-	 * Has to be called if the first <b>column</b> of your CSV-file (left) contains headers. Default is no row headers (false). 
-	 * @param b True, if is has row headers, false otherwise
+	 * Has to be called if the first <b>column</b> of your CSV-file (left)
+	 * contains headers. Default is no row headers (false).
+	 * 
+	 * @param b
+	 *            True, if is has row headers, false otherwise
 	 */
-	public void hasRowHeaders(boolean b){
+	public void hasRowHeaders(boolean b) {
 		LOGGER.log(Level.FINEST, "hasRowHeaders set to " + b);
 		this.hasRowHeaders = b;
 	}
 
+	public void hasQuotationMarks(boolean b) {
+		LOGGER.log(Level.FINEST, "hasEnclosingQuotationMarks set to " + b);
+		hasEnclosingQuotationMarks = b;
+	}
+
 	/**
-	 * This is an indicator if loading the CSV-file went smooth. 
-	 * If it happened, that the number of the separator char/string  
-	 * in every row differs, this will return false. There is no check for  
-	 * holes, so parsing a row like "data,,data,data" will be fine and 
-	 * just contain a blank element.
-	 * @return true, if there were no problems parsing the file. 
+	 * This is an indicator if loading the CSV-file went smooth. If it happened,
+	 * that the number of the separator char/string in every row differs, this
+	 * will return false. There is no check for holes, so parsing a row like
+	 * "data,,data,data" will be fine and just contain a blank element.
+	 * 
+	 * @return true, if there were no problems parsing the file.
 	 */
 	public boolean isComplete() {
 		return isComplete;
 	}
 
 	/**
-	 * If {@link #isComplete()} returns false, which means, there were errors 
-	 * parsing the CSV-file, this returns the row index of the CSV-file, which can be useful if 
-	 * you search for "bad spots" in the CSV-file and need to fix them manually.    
-	 * @return The index of the first problematic row, note that index begins at 0, 
-	 * line numbers of most text editors start at 1.
+	 * If {@link #isComplete()} returns false, which means, there were errors
+	 * parsing the CSV-file, this returns the row index of the CSV-file, which
+	 * can be useful if you search for "bad spots" in the CSV-file and need to
+	 * fix them manually.
+	 * 
+	 * @return The index of the first problematic row, note that index begins at
+	 *         0, line numbers of most text editors start at 1.
 	 */
 	public int getFirstIncompleteRowIndex() {
 		return firstIncompleteLine;
 	}
-	
+
 	/**
-	 * Returns the number of rows. If the document contains row headers and  
-	 * {@link #hasRowHeaders(boolean)} has been called with <i>true</i> before CSV-import, this will <b>not</b> 
-	 * contain the header row.
+	 * Returns the number of rows. If the document contains row headers and
+	 * {@link #hasRowHeaders(boolean)} has been called with <i>true</i> before
+	 * CSV-import, this will <b>not</b> contain the header row.
+	 * 
 	 * @return rowCount number of rows (without header row)
 	 */
 	public int getTotalRows() {
@@ -179,6 +204,7 @@ public class CsvP5 {
 
 	/**
 	 * Returns the number of columns.
+	 * 
 	 * @return columnCount Number of columns
 	 */
 	public int getTotalColumns() {
@@ -187,43 +213,49 @@ public class CsvP5 {
 
 	/**
 	 * Returns a column index by its name, returns -1 if no column has been
-	 * found. This can be used to find out a column index of a certain CSV-headline. 
-	 * Note, that this does not take care of the fact, that there can be more than 
-	 * one headlines with the same name. 
-	 * @param name name of the column
+	 * found. This can be used to find out a column index of a certain
+	 * CSV-headline. Note, that this does not take care of the fact, that there
+	 * can be more than one headlines with the same name.
+	 * 
+	 * @param name
+	 *            name of the column
 	 * @return integer index value of the column
 	 */
 	public int getColumnIndex(String name) {
 		for (Map.Entry<Integer, String> e : columnHeaders.entrySet()) {
-		    int key = e.getKey();
-		    String value = e.getValue();
-		    if(value.equals(name)){
-		    	return key;
-		    }
+			int key = e.getKey();
+			String value = e.getValue();
+			if (value.equals(name)) {
+				return key;
+			}
 		}
 		LOGGER.log(Level.WARNING, "No column named '" + name + "' was found");
 		return -1;
 	}
 
 	/**
-	 * Returns the name of a headline. To get the first headline, pass <i>0</>. 
-	 * @param column the Column number, which name you want to know
+	 * Returns the name of a headline. To get the first headline, pass <i>0</>.
+	 * 
+	 * @param column
+	 *            the Column number, which name you want to know
 	 * @return String The column name (headline)
 	 */
 	public String getColumnHeader(int column) {
 		LOGGER.log(Level.FINEST, "Function start");
-		if(columnHeaders.containsKey(column)){
+		if (columnHeaders.containsKey(column)) {
 			LOGGER.log(Level.FINEST, "Header with index " + column + "found!");
 			LOGGER.log(Level.FINEST, "Headername: " + columnHeaders.get(column));
 			return columnHeaders.get(column);
-		}
-		else{
-			LOGGER.log(Level.WARNING, "There is no headline with index " + column 
-					+ ". Did you call hasHeadline(true) before loading the file?");
+		} else {
+			LOGGER.log(
+					Level.WARNING,
+					"There is no headline with index "
+							+ column
+							+ ". Did you call hasHeadline(true) before loading the file?");
 			return "";
 		}
 	}
-	
+
 	/*
 	 * ======================================================================|
 	 * PUBLIC MATH FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -232,64 +264,74 @@ public class CsvP5 {
 
 	/**
 	 * Returns the biggest value within one column as float
-	 * @param columnIndex Index of the column (headlines do not count)
+	 * 
+	 * @param columnIndex
+	 *            Index of the column (headlines do not count)
 	 * @return biggest value, -1 if column was not found
 	 */
-	public float getColumnMax(int columnIndex){
-		if(columnIndex >= 0 && columnIndex < totalColumns){
+	public float getColumnMax(int columnIndex) {
+		if (columnIndex >= 0 && columnIndex < totalColumns) {
 			return Math.getMax(data, columnIndex);
-		}
-		else{
-			LOGGER.warning("columnIndex is out of range! it must be in the range [0.." + totalColumns + "], returning -1!");
+		} else {
+			LOGGER.warning("columnIndex is out of range! it must be in the range [0.."
+					+ totalColumns + "], returning -1!");
 			return -1f;
 		}
 	}
-	
+
 	/**
 	 * Returns the biggest value within one column as float
-	 * @param columnName header name of the column
+	 * 
+	 * @param columnName
+	 *            header name of the column
 	 * @return biggest value, -1 if column was not found
 	 */
-	public float getColumnMax(String columnName){
-		if(columnHeaders.containsValue(columnName)){
+	public float getColumnMax(String columnName) {
+		if (columnHeaders.containsValue(columnName)) {
 			return Math.getMax(data, getColumnIndex(columnName));
-		}
-		else{
-			LOGGER.log(Level.WARNING,  "No column headline named '" + columnName + "' found!");
+		} else {
+			LOGGER.log(Level.WARNING, "No column headline named '" + columnName
+					+ "' found!");
 			return -1f;
 		}
 	}
-	
+
 	/**
 	 * Returns the biggest value within one column as float
-	 * @param columnIndex Index of the column (headlines do not count)
+	 * 
+	 * @param columnIndex
+	 *            Index of the column (headlines do not count)
 	 * @return biggest value, -1 if column was not found
 	 */
-	public float getColumnMax(int columnIndex, int startIndex, int endIndex){
-		if(columnIndex >= 0 && columnIndex < totalColumns){
+	public float getColumnMax(int columnIndex, int startIndex, int endIndex) {
+		if (columnIndex >= 0 && columnIndex < totalColumns) {
 			return Math.getMax(data, columnIndex, startIndex, endIndex);
-		}
-		else{
-			LOGGER.warning("columnIndex is out of range! it must be in the range [0.." + totalColumns + "], returning -1!");
+		} else {
+			LOGGER.warning("columnIndex is out of range! it must be in the range [0.."
+					+ totalColumns + "], returning -1!");
 			return -1f;
 		}
 	}
-	
+
 	/**
-	 * Returns the biggest value within [startIndex..endIndex-1] of one column as float
-	 * @param columnName header name of the column
+	 * Returns the biggest value within [startIndex..endIndex-1] of one column
+	 * as float
+	 * 
+	 * @param columnName
+	 *            header name of the column
 	 * @return biggest value, -1 if column was not found
 	 */
-	public float getColumnMax(String columnName, int startIndex, int endIndex){
-		if(columnHeaders.containsValue(columnName)){
-			return Math.getMax(data, getColumnIndex(columnName), startIndex, endIndex);
-		}
-		else{
-			LOGGER.log(Level.WARNING,  "No column headline named '" + columnName + "' found!");
+	public float getColumnMax(String columnName, int startIndex, int endIndex) {
+		if (columnHeaders.containsValue(columnName)) {
+			return Math.getMax(data, getColumnIndex(columnName), startIndex,
+					endIndex);
+		} else {
+			LOGGER.log(Level.WARNING, "No column headline named '" + columnName
+					+ "' found!");
 			return -1f;
 		}
 	}
-	
+
 	/*
 	 * ======================================================================|
 	 * PUBLIC ELEMENT GETTERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -297,9 +339,13 @@ public class CsvP5 {
 	 */
 
 	/**
-	 * Returns the String of a specific row and column (untouched from the CSV-file).
-	 * @param rowIndex Row number
-	 * @param columnIndex Column number
+	 * Returns the String of a specific row and column (untouched from the
+	 * CSV-file).
+	 * 
+	 * @param rowIndex
+	 *            Row number
+	 * @param columnIndex
+	 *            Column number
 	 * @return String The data field as String
 	 */
 	public String getString(int rowIndex, int columnIndex) {
@@ -308,8 +354,11 @@ public class CsvP5 {
 
 	/**
 	 * Returns the String of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return String The data field as String
 	 */
 	public String getString(String columnName, int rowIndex) {
@@ -318,8 +367,11 @@ public class CsvP5 {
 
 	/**
 	 * Returns the integer of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return integer The data field as integer
 	 */
 	public int getInt(String columnName, int rowIndex) {
@@ -328,32 +380,37 @@ public class CsvP5 {
 
 	/**
 	 * Returns the integer of a specific row and column.
-	 * @param rowIndex row number
-	 * @param columnIndex column number
+	 * 
+	 * @param rowIndex
+	 *            row number
+	 * @param columnIndex
+	 *            column number
 	 * @return integer The data field as integer
 	 */
 	public int getInt(int rowIndex, int columnIndex) {
 		String sElement = getString(rowIndex, columnIndex);
 		int ret = -1;
 		// return -1 when string is empty
-		if(sElement == ""){
+		if (sElement == "") {
 			return ret;
 		}
 		try {
 			ret = Integer.parseInt(sElement);
 		} catch (NumberFormatException e) {
-			LOGGER.log(Level.WARNING, "Could not parse "
-							+ sElement
-							+ " to int! "
-							+ "Seems like you tried to parse a non-integer data field.");
+			LOGGER.log(Level.WARNING, "Could not parse " + sElement
+					+ " to int! "
+					+ "Seems like you tried to parse a non-integer data field.");
 		}
 		return ret;
 	}
 
 	/**
 	 * Returns the float of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return The data field as float
 	 */
 	public float getFloat(String columnName, int rowIndex) {
@@ -362,8 +419,11 @@ public class CsvP5 {
 
 	/**
 	 * Returns the float of a specific row and column.
-	 * @param columnName name of the column
-	 * @param rowIndex row number
+	 * 
+	 * @param columnName
+	 *            name of the column
+	 * @param rowIndex
+	 *            row number
 	 * @return The data field as float
 	 */
 	public float getFloat(int rowIndex, int columnIndex) {
@@ -372,81 +432,86 @@ public class CsvP5 {
 		try {
 			ret = Float.parseFloat(sElement);
 		} catch (NumberFormatException e) {
-			LOGGER.log(Level.WARNING, "Could not parse "
-							+ sElement
-							+ " to float! "
-							+ "Seems like you tried to parse a non-float data field.");
+			LOGGER.log(Level.WARNING, "Could not parse " + sElement
+					+ " to float! "
+					+ "Seems like you tried to parse a non-float data field.");
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Returns the current separator char/string.
+	 * 
 	 * @return the separator
 	 */
-	public String getSeparator(){
+	public String getSeparator() {
 		return separator;
 	}
-	
+
 	/**
 	 * Returns the current char/string used to begin a comment
+	 * 
 	 * @return the comment string
 	 */
-	public String getCommentIndicator(){
+	public String getCommentIndicator() {
 		return comment;
 	}
-	
+
 	/*
 	 * ======================================================================|
 	 * PUBLIC SETTERS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-	
+
 	/**
 	 * Assigns a new separator, default is {@link #DEFAULT_SEPARATOR}
-	 * @param separator the new separator to use
+	 * 
+	 * @param separator
+	 *            the new separator to use
 	 */
-	public void setSeparator(String separator){
+	public void setSeparator(String separator) {
 		this.separator = separator;
 	}
-	
+
 	/**
 	 * Sets a new comment indicator, default is {@link #DEFAULT_COMMENT}
-	 * @param commentIndicator the new comment indicator
+	 * 
+	 * @param commentIndicator
+	 *            the new comment indicator
 	 */
-	public void setCommentIndicator(String commentIndicator){
-		LOGGER.log(Level.FINE, "Comment indicator set to " + commentIndicator); 
+	public void setCommentIndicator(String commentIndicator) {
+		LOGGER.log(Level.FINE, "Comment indicator set to " + commentIndicator);
 		this.comment = commentIndicator;
 	}
-	
+
 	/**
-	 * Sets a new relative filename pointing to a CSV-File within the data directory. 
-	 * (e.g. "awesome_data.csv")
+	 * Sets a new relative filename pointing to a CSV-File within the data
+	 * directory. (e.g. "awesome_data.csv")
+	 * 
 	 * @param filename
 	 */
-	public void setFilename(String filename){
+	public void setFilename(String filename) {
 		LOGGER.log(Level.FINE, "Filename set to " + filename);
 		this.filename = filename;
 	}
-	
+
 	/**
-	 * If there are problems, try to call this using <i>Level.FINEST</i>. 
+	 * If there are problems, try to call this using <i>Level.FINEST</i>.
 	 */
-	public static void setDebugLevel(Level level){
+	public static void setDebugLevel(Level level) {
 		debugLevel = level;
 		LOGGER.log(Level.INFO, "Debug Level set to " + level.getName());
 		initLogLevel();
 	}
-	
-		
+
 	/*
 	 * ======================================================================|
 	 * PRIVATE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-	
+
 	/**
-	 * Get's called by the constructor to store / initiate the class variables. 
+	 * Get's called by the constructor to store / initiate the class variables.
 	 */
 	private void init(PApplet p, String filename, String separator,
 			String comment, boolean hasEnclosingQuotationMarks) {
@@ -461,7 +526,7 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Resets the processing flags, which can be used to see if there were 
+	 * Resets the processing flags, which can be used to see if there were
 	 * errors while loading/parsing the file
 	 */
 	private void resetFlags() {
@@ -469,37 +534,39 @@ public class CsvP5 {
 		isComplete = false;
 		firstIncompleteLine = -1;
 	}
-	
+
 	/**
 	 * Sets the current log level to {@link #debugLevel}.
 	 */
-	private static void initLogLevel(){
+	private static void initLogLevel() {
 		// Set new level on logger
 		LOGGER.setLevel(debugLevel);
-	    // Handler for console (reuse it if it already exists)
-	    Handler consoleHandler = null;
-	    //see if there is already a console handler
-	    for (Handler handler : LOGGER.getHandlers()) {
-	        if (handler instanceof ConsoleHandler) {
-	            //found the console handler
-	            consoleHandler = handler;
-	            break;
-	        }
-	    }
-	    if (consoleHandler == null) {
-	        //there was no console handler found, create a new one
-	        consoleHandler = new ConsoleHandler();
-	        LOGGER.addHandler(consoleHandler);
-	    }
-	    //set the console handler to fine:
-	    consoleHandler.setLevel(debugLevel);
+		// Handler for console (reuse it if it already exists)
+		Handler consoleHandler = null;
+		// see if there is already a console handler
+		for (Handler handler : LOGGER.getHandlers()) {
+			if (handler instanceof ConsoleHandler) {
+				// found the console handler
+				consoleHandler = handler;
+				break;
+			}
+		}
+		if (consoleHandler == null) {
+			// there was no console handler found, create a new one
+			consoleHandler = new ConsoleHandler();
+			LOGGER.addHandler(consoleHandler);
+		}
+		// set the console handler to fine:
+		consoleHandler.setLevel(debugLevel);
 	}
-	
+
 	/**
-	 * Helper function, returns the number of elements in the first 
-	 * non-comment line, will be used to see of the number of elements 
-	 * from every row match each other (if the CSV file is complete).	 * 
-	 * @param rows The raw CSV-data
+	 * Helper function, returns the number of elements in the first non-comment
+	 * line, will be used to see of the number of elements from every row match
+	 * each other (if the CSV file is complete). *
+	 * 
+	 * @param rows
+	 *            The raw CSV-data
 	 * @return Number of elements
 	 */
 	private int getNumberOfElements(String[] rows) {
@@ -515,23 +582,27 @@ public class CsvP5 {
 			}
 			String[] pieces = PApplet.split(rows[i], separator);
 			if (hasEnclosingQuotationMarks) {
-				removeEnclosingQuotationMarks(pieces);
+				pieces = repairBadStringArray(pieces);
 			}
 			// Get rid of unnecessary leading and ending spaces
 			// and return number of elements of first "usable" line
 			pieces = PApplet.trim(pieces);
 			return pieces.length;
 		}
-		LOGGER.log(Level.WARNING, "Seams like ther are only comment or blank lines!");
+		LOGGER.log(Level.WARNING,
+				"Seams like ther are only comment or blank lines!");
 		return 0;
 	}
 
 	/**
-	 * Checks if the elements start and end with quotation marks (e.g. "data" -> data) 
-	 * and deletes them if found.  
-	 * This will only delete the <b>first</b> and <b>last</b> quotation mark,  
-	 * if there are more, they will be left untouched.
-	 * @param arr Array of Strings
+	 * Checks if the elements start and end with quotation marks (e.g. "data" ->
+	 * data) and deletes them if found. This will only delete the <b>first</b>
+	 * and <b>last</b> quotation mark, if there are more, they will be left
+	 * untouched.
+	 * 
+	 * @param arr
+	 *            Array of Strings
+	 * @deprecated
 	 */
 	private void removeEnclosingQuotationMarks(String[] arr) {
 		LOGGER.log(Level.FINE, "Removing enclosing quotation marks");
@@ -545,29 +616,38 @@ public class CsvP5 {
 	}
 
 	/**
-	 * Does the actual CSV file parsing, skips empty and commented-out lines.  
+	 * Does the actual CSV file parsing, skips empty and commented-out lines.
 	 * Gets called by other loadFile() methods.
-	 * @param filename The filename of the csv-file within the data directory
-	 * @param separator Separator char/string
-	 * @param comments Introducing char/string for comments
-	 * @param removeEnclosingQuotationMarks Whether or not the data-elements are 
-	 * surrounded by quotation marks 
+	 * 
+	 * @param filename
+	 *            The filename of the csv-file within the data directory
+	 * @param separator
+	 *            Separator char/string
+	 * @param comments
+	 *            Introducing char/string for comments
+	 * @param removeEnclosingQuotationMarks
+	 *            Whether or not the data-elements are surrounded by quotation
+	 *            marks
 	 */
-	private void loadFile(String filename, String separator, String comment, boolean removeEnclosingQuotationMarks) {
-		LOGGER.log(Level.FINE, "Beginning to load file: " + filename, ", separator: " 
-				+ separator + ", comment: " + comment + ", removeEnclosingQuotationMarks: " + removeEnclosingQuotationMarks
-				+ "hasHeadline: " + hasColumnHeaders);
-		if(hasColumnHeaders){
+	private void loadFile(String filename, String separator, String comment,
+			boolean removeEnclosingQuotationMarks) {
+		LOGGER.log(Level.FINE, "Beginning to load file: " + filename,
+				", separator: " + separator + ", comment: " + comment
+						+ ", removeEnclosingQuotationMarks: "
+						+ removeEnclosingQuotationMarks + "hasHeadline: "
+						+ hasColumnHeaders);
+		if (hasColumnHeaders) {
 			columnHeaders = new HashMap<Integer, String>();
 		}
-		if(hasRowHeaders){
+		if (hasRowHeaders) {
 			rowHeaders = new HashMap<Integer, String>();
 		}
 		String[] rows = p5.loadStrings(filename);
 
 		data = new String[rows.length][];
 		int nFirstLineElements = getNumberOfElements(rows);
-		LOGGER.log(Level.FINEST, "number of elements in first line " + nFirstLineElements);
+		LOGGER.log(Level.FINEST, "number of elements in first line "
+				+ nFirstLineElements);
 
 		isComplete = true;
 		for (int i = 0; i < rows.length; i++) {
@@ -581,13 +661,22 @@ public class CsvP5 {
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
+			;
+			if (hasEnclosingQuotationMarks) {
+				pieces = repairBadStringArray(pieces);
+			}
 
 			// Get rid of unnecessary leading and ending spaces
 			data[totalRows] = PApplet.trim(pieces);
 			// check if the number of elements is the same as in the first line
 			if (data[totalRows].length != nFirstLineElements) {
-				LOGGER.log(Level.WARNING, "Found an incomplete line in the CSV! Row: " + totalRows 
-						+ ". Number of elements in first row and this row do not match!");
+				LOGGER.log(
+						Level.WARNING,
+						"Found an incomplete line in the CSV! Row: "
+								+ totalRows
+								+ ". Number of elements in first row and this row do not match! "
+								+ "Number of elements: "
+								+ data[totalRows].length);
 				// set flag if not
 				isComplete = false;
 				if (firstIncompleteLine != -1) {
@@ -595,82 +684,94 @@ public class CsvP5 {
 				}
 			}
 			totalRows++;
+			// TODO: ONLY FOR TESTING!!!
+//			if(i > 10){
+//				System.out.println("FirstLineElements: " + nFirstLineElements);
+//				return;
+//			}
 		}
 		int startIndex = 0;
-		if(hasColumnHeaders){
+		if (hasColumnHeaders) {
 			startIndex = 1;
 			// store the headlines
-			for(int i=0; i<nFirstLineElements; i++){
+			for (int i = 0; i < nFirstLineElements; i++) {
 				columnHeaders.put(i, data[0][i]);
 			}
 		}
-		// resize the 'data' array as necessary, 
+		// resize the 'data' array as necessary,
 		// if there is the headline remove it from the array
-		data = (String[][]) PApplet.subset(data, startIndex, totalRows-startIndex);
+		data = (String[][]) PApplet.subset(data, startIndex, totalRows
+				- startIndex);
 		// update rowCount
 		totalRows = data.length;
 		// Store the number of columns (data entries per line)
 		if (data.length >= 1) {
 			totalColumns = data[0].length;
-		}
-		else{
-			LOGGER.log(Level.WARNING, "There was an error importing the data. You can try to: " +
-					"Set the separator and make sure that the line endings are okay");
+		} else {
+			LOGGER.log(
+					Level.WARNING,
+					"There was an error importing the data. You can try to: "
+							+ "Set the separator and make sure that the line endings are okay");
 		}
 	}
-	
+
 	/**
-	 * When using Processing.split on a row with delimiter chars 
-	 * withing the data (enclosed by quotation marks), this will 
-	 * repair the array by mergin the splitted elements again. 
-	 * The function will remove the quotation marks after the merge.
-	 * If the quotation marks only appear hear and there .. forget it!
-	 * @param orig String Array containing elements like >>"data<< or <<data"<<. 
+	 * When using Processing.split on a row with delimiter chars withing the
+	 * data (enclosed by quotation marks), this will repair the array by mergin
+	 * the splitted elements again. The function will remove the quotation marks
+	 * after the merge. If the quotation marks only appear hear and there ..
+	 * forget it!
+	 * 
+	 * @param orig
+	 *            String Array containing elements like >>"data<< or <<data"<<.
 	 * @return cleaned Array
 	 */
-	private String[] repairBadStringArray(String[] orig){
-		    char Q = '\"';
-		    String[] a = new String[orig.length];
-		    boolean merge = false;
-		    int i = 0;
-		    for(String s: orig){
-		      int firstQ = s.indexOf(Q);
-		      int lastQ = s.lastIndexOf(Q); 
-		      if(merge){
-		        // -> data" -> put at end of last String
-		        if(i >= 0 && firstQ == lastQ && lastQ == s.length()-1){
-		          a[i] += s.substring(0, s.length()-1);
-		         merge = false;
-		         i++;
-		         continue; 
-		        }
-		      }
-		      // good one -> "data" or data
-		      if(firstQ == 0 && lastQ == s.length()-1 || firstQ == -1 && lastQ == -1){
-		        a[i] = new String(s.substring(1, s.length()-1));
-		        i++;
-		      }      
-		      // bad one -> "data
-		      else if(firstQ == 0 && lastQ == 0){
-		        merge = true;
-		        a[i] = new String(s.substring(1, s.length()));
-		      }
-		    }
-		    return getArrayWithoutNull(a);
-		  }
-		  
+	private String[] repairBadStringArray(String[] orig) {
+		char Q = '\"';
+		String[] a = new String[orig.length];
+		boolean merge = false;
+		int i = 0;
+		for (String s : orig) {
+			int firstQ = s.indexOf(Q);
+			int lastQ = s.lastIndexOf(Q);
+			if (merge) {
+				// -> data" -> put at end of last String
+				if (i >= 0 && firstQ == lastQ && lastQ == s.length() - 1) {
+					a[i] += s.substring(0, s.length() - 1);
+					merge = false;
+					i++;
+					continue;
+				}
+			}
+			// good one -> "data" or data
+			if (firstQ == 0 && lastQ == s.length() - 1 || firstQ == -1
+					&& lastQ == -1) {
+				a[i] = new String(s.substring(1, s.length() - 1));
+				i++;
+			}
+			// bad one -> "data
+			else if (firstQ == 0 && lastQ == 0) {
+				merge = true;
+				a[i] = new String(s.substring(1, s.length()));
+			}
+		}
+		return getArrayWithoutNull(a);
+	}
+
 	/**
 	 * Checks for null elements in the array and creates a new one without them
-	 * @param a String Array containing null characters
+	 * 
+	 * @param a
+	 *            String Array containing null characters
 	 * @return clean array
 	 */
-		  private String[] getArrayWithoutNull(String[] a){
-		    ArrayList<String> al = new ArrayList<String>();
-		    for(String s: a){
-		      if(s != null){
-		        al.add(s);
-		      }
-		    }
-		    return al.toArray(new String[al.size()]);
-		  }
+	private String[] getArrayWithoutNull(String[] a) {
+		ArrayList<String> al = new ArrayList<String>();
+		for (String s : a) {
+			if (s != null) {
+				al.add(s);
+			}
+		}
+		return al.toArray(new String[al.size()]);
+	}
 }
