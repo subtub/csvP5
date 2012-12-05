@@ -43,6 +43,8 @@ import de.fhpotsdam.util.math.Math;
  * @example csvP5simple
  */
 public class CsvP5 {
+	private final static String CSVP5_LIBRARY_VERSION = "##library.prettyVersion##";
+	
 	private static final String DEFAULT_SEPARATOR = ",";
 	private static final String DEFAULT_COMMENT = "#";
 	private static final String QUOTATION_MARK = "\"";
@@ -120,7 +122,16 @@ public class CsvP5 {
 	 * PUBLIC FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
 	 * ======================================================================|
 	 */
-
+	
+	/**
+	 * Return the version of the library.
+	 * 
+	 * @return String
+	 */
+	public static String version() {
+		return CSVP5_LIBRARY_VERSION;
+	}
+	
 	/**
 	 * Resets the processing-flags and starts the actual CSV-processing. All
 	 * functions like setSeparator() or setComment() must be called
