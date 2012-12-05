@@ -661,7 +661,7 @@ public class CsvP5 {
 			}
 
 			String[] pieces = PApplet.split(rows[i], separator);
-			;
+			
 			if (hasEnclosingQuotationMarks) {
 				pieces = repairBadStringArray(pieces);
 			}
