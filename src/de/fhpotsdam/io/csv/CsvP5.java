@@ -48,7 +48,7 @@ public class CsvP5 {
 	private static final String DEFAULT_SEPARATOR = ",";
 	private static final String DEFAULT_COMMENT = "#";
 	private static final String QUOTATION_MARK = "\"";
-	private static final boolean REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT = true;
+	private static final boolean HAS_ENCLOSING_QUOTATION_MARKS_DEFAULT = false;
 
 	private PApplet p5; // processing reference for text loading and other stuff
 	private String filename; // filename to load
@@ -114,7 +114,7 @@ public class CsvP5 {
 	public CsvP5(PApplet p, String filename) {
 		LOGGER.log(Level.FINEST, "Constructor called");
 		init(p, filename, DEFAULT_SEPARATOR, DEFAULT_COMMENT,
-				REMOVE_ENCLOSING_QUOTATION_MARKS_DEFAULT);
+				HAS_ENCLOSING_QUOTATION_MARKS_DEFAULT);
 	}
 
 	/*
