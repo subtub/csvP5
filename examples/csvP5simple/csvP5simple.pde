@@ -1,7 +1,7 @@
 /**
  * csvP5simple
  *
- * csvP5 http://www.github.com/wrongentertainment/csvP5
+ * csvP5 http://www.github.com/subtub/csvP5
  */
 
 import de.fhpotsdam.io.csv.*;
