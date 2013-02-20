@@ -7,7 +7,7 @@ Processing Library for reading CSV(Character Separated Values) files.
 0.1.2 (stable and versioned using [semantic versioning](http://semver.org/))   
   
 **Issues and Bugs**  
-You can find a list of all known bugs at [GitHub](https://github.com/wrongentertainment/csvP5/issues). Please report if you find an unknown bug.  
+You can find a list of all known bugs at [GitHub](https://github.com/subtub/csvP5/issues). Please report if you find an unknown bug.  
 
 
 ## Changelog  
