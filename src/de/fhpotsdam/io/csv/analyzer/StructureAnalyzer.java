@@ -1,8 +1,8 @@
 //
-// CsvP5.java
+// StructureAnalyzer.java
 // CsvP5 (v.##library.prettyVersion##) is released under the MIT License.
 //
-// Copyright (c) 2012, Tim Pulver & Paul Vollmer http://www.fh-potsdam.de
+// Copyright (c) 2012-2013, Tim Pulver & Paul Vollmer http://www.fh-potsdam.de
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
