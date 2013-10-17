@@ -24,3 +24,7 @@ Starting main class at wrongPowder Repository
   
 ## License 
 csvP5 is released under the MIT License: http://www.opensource.org/licenses/MIT
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/subtub/csvp5/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
